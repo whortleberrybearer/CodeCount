@@ -1,6 +1,6 @@
 public class WordCountResult
 {
-    public string Word { get; set; }
+    public required string Word { get; init; }
 
-    public int Count { get; set; }
+    public int Count { get; internal set; }
 }
