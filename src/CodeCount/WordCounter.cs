@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 public class WordCount
@@ -10,18 +11,27 @@ public class WordCount
 
 public class WordCounter
 {
-    public List<WordCount> GetWordCounts(string text)
+    public IEnumerable<WordCount> GetWordCounts(Stream stream)
     {
-        if (string.IsNullOrEmpty(text))
+        if (stream is null)
         {
-            return new List<WordCount>();
+            throw new ArgumentNullException(nameof(stream));
         }
 
-        var wordCounts = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
-                             .GroupBy(word => word.ToLower())
-                             .Select(group => new WordCount { Word = group.Key, Count = group.Count() })
-                             .ToList();
+        if (stream.Length == 0)
+        {
+            return Enumerable.Empty<WordCount>();
+        }
 
-        return wordCounts;
+        using (var reader = new StreamReader(stream))
+        {
+            var text = reader.ReadToEnd();
+            var wordCounts = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
+                                 .GroupBy(word => word.ToLower())
+                                 .Select(group => new WordCount { Word = group.Key, Count = group.Count() })
+                                 .ToList();
+
+            return wordCounts;
+        }
     }
 }
