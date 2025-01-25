@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="CodeCount" />
     <Using Include="Xunit" />
     <Using Include="Shouldly" />
   </ItemGroup>

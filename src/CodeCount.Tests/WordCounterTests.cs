@@ -1,38 +1,50 @@
-using System.IO;
-
 public class WordCounterTests
 {
     private Stream GenerateStreamFromString(string s)
     {
         var stream = new MemoryStream();
-        var writer = new StreamWriter(stream);
-        writer.Write(s);
-        writer.Flush();
+        
+        using (var writer = new StreamWriter(stream, leaveOpen: true))
+        {
+            writer.Write(s);
+            writer.Flush();
+        }
+
         stream.Position = 0;
+
         return stream;
     }
 
     [Fact]
-    public void TestEmptyString()
+    public void Empty_string_should_return_no_results()
     {
         var wordCounter = new WordCounter();
+
         using (var stream = GenerateStreamFromString(string.Empty))
         {
             var result = wordCounter.GetWordCounts(stream).ToArray();
-            result.Length.ShouldBe(0);
+
+            result.ShouldBeEmpty();
         }
     }
 
     [Fact]
-    public void TestSingleWord()
+    public void Single_word_should_return_one_result()
     {
         var wordCounter = new WordCounter();
+
         using (var stream = GenerateStreamFromString("hello"))
         {
             var result = wordCounter.GetWordCounts(stream).ToArray();
+
             result.Length.ShouldBe(1);
-            result[0].Word.ShouldBe("hello");
-            result[0].Count.ShouldBe(1);
+            result[0].ShouldBe(
+                new WordCountResult() { Word = "hello", Count = 1 },
+                new WordCountResultComparer());
+
+            //result.Length.ShouldBe(1);
+            //result[0].Word.ShouldBe("hello");
+            //result[0].Count.ShouldBe(1);
         }
     }
 
@@ -40,6 +52,7 @@ public class WordCounterTests
     public void TestMultipleWords()
     {
         var wordCounter = new WordCounter();
+
         using (var stream = GenerateStreamFromString("hello world hello"))
         {
             var result = wordCounter.GetWordCounts(stream).ToArray();
@@ -55,6 +68,7 @@ public class WordCounterTests
     public void TestCaseInsensitive()
     {
         var wordCounter = new WordCounter();
+
         using (var stream = GenerateStreamFromString("Hello hello HELLO"))
         {
             var result = wordCounter.GetWordCounts(stream).ToArray();
@@ -68,6 +82,7 @@ public class WordCounterTests
     public void TestPunctuation()
     {
         var wordCounter = new WordCounter();
+
         using (var stream = GenerateStreamFromString("hello, world! hello."))
         {
             var result = wordCounter.GetWordCounts(stream).ToArray();
@@ -79,3 +94,4 @@ public class WordCounterTests
         }
     }
 }
+
