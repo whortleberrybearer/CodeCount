@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Xunit;
-using Shouldly;
-
 public class WordCounterTests
 {
     [Fact]
