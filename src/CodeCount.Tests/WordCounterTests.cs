@@ -15,7 +15,7 @@ public class WordCounterTests
             stream.Position = 0;
 
             return stream;
-}
+        }
 
         [Fact]
         public void An_empty_string_should_return_no_results()
