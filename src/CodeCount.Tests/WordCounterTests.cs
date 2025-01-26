@@ -1,22 +1,22 @@
 public class WordCounterTests
 {
-    private static Stream GenerateStreamFromString(string s)
-    {
-        var stream = new MemoryStream();
-        
-        using (var writer = new StreamWriter(stream, leaveOpen: true))
-        {
-            writer.Write(s);
-            writer.Flush();
-        }
-
-        stream.Position = 0;
-
-        return stream;
-    }
-
     public class When_counting_words
     {
+        private static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            
+            using (var writer = new StreamWriter(stream, leaveOpen: true))
+            {
+                writer.Write(s);
+                writer.Flush();
+            }
+
+            stream.Position = 0;
+
+            return stream;
+}
+
         [Fact]
         public void An_empty_string_should_return_no_results()
         {
