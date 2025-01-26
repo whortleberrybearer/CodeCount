@@ -45,7 +45,7 @@ public class WordCounterTests
         }
 
         [Fact]
-        public void Duplicate_words_counted()
+        public void Duplicate_words_are_counted()
         {
             var wordCounter = new WordCounter();
 
