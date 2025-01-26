@@ -1,4 +1,4 @@
-public class WordCountResult
+public record WordCountResult
 {
     public required string Word { get; init; }
 

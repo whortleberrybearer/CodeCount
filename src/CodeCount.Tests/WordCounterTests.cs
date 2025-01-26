@@ -40,9 +40,7 @@ public class WordCounterTests
                 var results = wordCounter.GetWordCounts(stream).ToArray();
 
                 results.Length.ShouldBe(1);
-                results.ShouldContain(
-                    new WordCountResult() { Word = "hello", Count = 1 },
-                    new WordCountResultComparer());
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
             }
         }
 
@@ -56,12 +54,8 @@ public class WordCounterTests
                 var results = wordCounter.GetWordCounts(stream).ToArray();
                 
                 results.Length.ShouldBe(2);
-                results.ShouldContain(
-                    new WordCountResult() { Word = "hello", Count = 2 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "world", Count = 1 },
-                    new WordCountResultComparer());
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
+                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
             }
         }
 
@@ -75,9 +69,7 @@ public class WordCounterTests
                 var results = wordCounter.GetWordCounts(stream).ToArray();
 
                 results.Length.ShouldBe(1);
-                results.ShouldContain(
-                    new WordCountResult() { Word = "hello", Count = 3 },
-                    new WordCountResultComparer());
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 3 });
             }
         }
 
@@ -91,24 +83,12 @@ public class WordCounterTests
                 var results = wordCounter.GetWordCounts(stream).ToArray();
 
                 results.Length.ShouldBe(6);
-                results.ShouldContain(
-                    new WordCountResult() { Word = "dave", Count = 1 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "hello", Count = 1 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "steve", Count = 3 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "hi", Count = 1 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "it", Count = 1 },
-                    new WordCountResultComparer());
-                results.ShouldContain(
-                    new WordCountResult() { Word = "not", Count = 1 },
-                    new WordCountResultComparer());
+                results.ShouldContain(new WordCountResult() { Word = "dave", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "steve", Count = 3 });
+                results.ShouldContain(new WordCountResult() { Word = "hi", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "it", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "not", Count = 1 });
             }
         }
 
@@ -139,9 +119,7 @@ public class WordCounterTests
                 var results = wordCounter.GetWordCounts(stream).ToArray();
 
                 results.Count().ShouldBe(1);
-                results.ShouldContain(
-                    new WordCountResult() { Word = "word", Count = 1 },
-                    new WordCountResultComparer());
+                results.ShouldContain(new WordCountResult() { Word = "word", Count = 1 });
             }
         }
     }
