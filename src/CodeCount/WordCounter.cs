@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 public class WordCounter
 {
     public IEnumerable<WordCountResult> GetWordCounts(Stream stream)
@@ -15,9 +21,11 @@ public class WordCounter
         using (var reader = new StreamReader(stream))
         {
             var text = reader.ReadToEnd();
-            var wordCounts = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
+            var wordCounts = Regex.Split(text, @"[^a-zA-Z]+")
+                                 .Where(word => word.Length > 1) // Ignore single-letter words
                                  .GroupBy(word => word.ToLower())
                                  .Select(group => new WordCountResult { Word = group.Key, Count = group.Count() })
+                                 .OrderBy(result => result.Word) // Ensure results are in alphabetical order
                                  .ToList();
 
             return wordCounts;

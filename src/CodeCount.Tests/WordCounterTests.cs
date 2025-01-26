@@ -134,12 +134,14 @@ public class WordCounterTests
         {
             var wordCounter = new WordCounter();
 
-            using (var stream = GenerateStreamFromString("I like a big sandwich"))
+            using (var stream = GenerateStreamFromString("a b c word"))
             {
                 var results = wordCounter.GetWordCounts(stream).ToArray();
 
-                results.ShouldNotContain(r => r.Word.Equals("i", StringComparison.OrdinalIgnoreCase));
-                results.ShouldNotContain(r => r.Word.Equals("a", StringComparison.OrdinalIgnoreCase));
+                results.Count().ShouldBe(1);
+                results.ShouldContain(
+                    new WordCountResult() { Word = "word", Count = 1 },
+                    new WordCountResultComparer());
             }
         }
     }
