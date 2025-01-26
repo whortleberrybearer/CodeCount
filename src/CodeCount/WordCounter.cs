@@ -17,14 +17,13 @@ public class WordCounter
         using (var reader = new StreamReader(stream))
         {
             var text = reader.ReadToEnd();
-            var wordCounts = Regex.Split(text, @"[^a-zA-Z]+")
-                                 .Where(word => word.Length > 1) // Ignore single-letter words
-                                 .GroupBy(word => word.ToLower())
-                                 .Select(group => new WordCountResult { Word = group.Key, Count = group.Count() })
-                                 .OrderBy(result => result.Word) // Ensure results are in alphabetical order
-                                 .ToList();
-
-            return wordCounts;
+            
+            return Regex.Split(text, @"[^a-zA-Z]+")
+                .Where(word => word.Length > 1) // Ignore single-letter words
+                .GroupBy(word => word.ToLower())
+                .Select(group => new WordCountResult { Word = group.Key, Count = group.Count() })
+                .OrderBy(result => result.Word) // Ensure results are in alphabetical order
+                .ToArray();
         }
     }
 }
