@@ -1,6 +1,6 @@
 public class WordCounterTests
 {
-    private Stream GenerateStreamFromString(string s)
+    private static Stream GenerateStreamFromString(string s)
     {
         var stream = new MemoryStream();
         
@@ -15,82 +15,132 @@ public class WordCounterTests
         return stream;
     }
 
-    [Fact]
-    public void Empty_string_should_return_no_results()
+    public class When_counting_words
     {
-        var wordCounter = new WordCounter();
-
-        using (var stream = GenerateStreamFromString(string.Empty))
+        [Fact]
+        public void An_empty_string_should_return_no_results()
         {
-            var result = wordCounter.GetWordCounts(stream).ToArray();
+            var wordCounter = new WordCounter();
 
-            result.ShouldBeEmpty();
+            using (var stream = GenerateStreamFromString(string.Empty))
+            {
+                var result = wordCounter.GetWordCounts(stream).ToArray();
+
+                result.ShouldBeEmpty();
+            }
         }
-    }
 
-    [Fact]
-    public void Single_word_should_return_one_result()
-    {
-        var wordCounter = new WordCounter();
-
-        using (var stream = GenerateStreamFromString("hello"))
+        [Fact]
+        public void A_single_word_should_return_one_result()
         {
-            var result = wordCounter.GetWordCounts(stream).ToArray();
+            var wordCounter = new WordCounter();
 
-            result.Length.ShouldBe(1);
-            result[0].ShouldBe(
-                new WordCountResult() { Word = "hello", Count = 1 },
-                new WordCountResultComparer());
+            using (var stream = GenerateStreamFromString("hello"))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
 
-            //result.Length.ShouldBe(1);
-            //result[0].Word.ShouldBe("hello");
-            //result[0].Count.ShouldBe(1);
+                results.Length.ShouldBe(1);
+                results.ShouldContain(
+                    new WordCountResult() { Word = "hello", Count = 1 },
+                    new WordCountResultComparer());
+            }
         }
-    }
 
-    [Fact]
-    public void TestMultipleWords()
-    {
-        var wordCounter = new WordCounter();
-
-        using (var stream = GenerateStreamFromString("hello world hello"))
+        [Fact]
+        public void Duplicate_words_counted()
         {
-            var result = wordCounter.GetWordCounts(stream).ToArray();
-            result.Length.ShouldBe(2);
-            result[0].Word.ShouldBe("hello");
-            result[0].Count.ShouldBe(2);
-            result[1].Word.ShouldBe("world");
-            result[1].Count.ShouldBe(1);
+            var wordCounter = new WordCounter();
+
+            using (var stream = GenerateStreamFromString("hello world hello"))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
+                
+                results.Length.ShouldBe(2);
+                results.ShouldContain(
+                    new WordCountResult() { Word = "hello", Count = 2 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "world", Count = 1 },
+                    new WordCountResultComparer());
+            }
         }
-    }
 
-    [Fact]
-    public void TestCaseInsensitive()
-    {
-        var wordCounter = new WordCounter();
-
-        using (var stream = GenerateStreamFromString("Hello hello HELLO"))
+        [Fact]
+        public void Case_should_be_ignored()
         {
-            var result = wordCounter.GetWordCounts(stream).ToArray();
-            result.Length.ShouldBe(1);
-            result[0].Word.ShouldBe("hello");
-            result[0].Count.ShouldBe(3);
+            var wordCounter = new WordCounter();
+
+            using (var stream = GenerateStreamFromString("Hello hello HELLO"))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
+
+                results.Length.ShouldBe(1);
+                results.ShouldContain(
+                    new WordCountResult() { Word = "hello", Count = 3 },
+                    new WordCountResultComparer());
+            }
         }
-    }
 
-    [Fact]
-    public void TestPunctuation()
-    {
-        var wordCounter = new WordCounter();
-
-        using (var stream = GenerateStreamFromString("hello, world! hello."))
+        [Fact]
+        public void Punctuation_and_numbers_should_be_ignored()
         {
-            var result = wordCounter.GetWordCounts(stream).ToArray();
-            result.Length.ShouldBe(2);
-            result[0].Word.ShouldBe("hello");
-            result[0].Count.ShouldBe(2);
-            result[1].Word.ShouldBe("world");
-            result[1].Count.ShouldBe(1);
+            var wordCounter = new WordCounter();
+
+            using (var stream = GenerateStreamFromString("Dave: Hello Steve1.\r\nSteve2: Hi! It's not Steve1."))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
+
+                results.Length.ShouldBe(6);
+                results.ShouldContain(
+                    new WordCountResult() { Word = "dave", Count = 1 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "hello", Count = 1 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "steve", Count = 3 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "hi", Count = 1 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "it", Count = 1 },
+                    new WordCountResultComparer());
+                results.ShouldContain(
+                    new WordCountResult() { Word = "not", Count = 1 },
+                    new WordCountResultComparer());
+            }
+        }
+
+        [Fact]
+        public void Results_should_be_in_alphabetical_order()
+        {
+            var wordCounter = new WordCounter();
+
+            using (var stream = GenerateStreamFromString("The quick brown fox"))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
+
+                results.Length.ShouldBe(4);
+                results[0].Word.ShouldBe("brown");
+                results[1].Word.ShouldBe("fox");
+                results[2].Word.ShouldBe("quick");
+                results[3].Word.ShouldBe("the");
+            }
+        }
+
+        [Fact]
+        public void Single_letters_should_be_ignored()
+        {
+            var wordCounter = new WordCounter();
+
+            using (var stream = GenerateStreamFromString("I like a big sandwich"))
+            {
+                var results = wordCounter.GetWordCounts(stream).ToArray();
+
+                results.ShouldNotContain(r => r.Word.Equals("i", StringComparison.OrdinalIgnoreCase));
+                results.ShouldNotContain(r => r.Word.Equals("a", StringComparison.OrdinalIgnoreCase));
+            }
         }
     }
 }
