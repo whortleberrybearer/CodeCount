@@ -1,13 +1,13 @@
 public class WordCountResultComparer : IEqualityComparer<WordCountResult>
 {
-    public bool Equals(WordCountResult x, WordCountResult y)
+    public bool Equals(WordCountResult? x, WordCountResult? y)
     {
-        if (x == null && y == null)
+        if (x is null && y is null)
         {
             return true;
         }
 
-        if (x == null || y == null)
+        if (x is null || y is null)
         {
             return false;
         }
@@ -17,12 +17,12 @@ public class WordCountResultComparer : IEqualityComparer<WordCountResult>
 
     public int GetHashCode(WordCountResult obj)
     {
-        if (obj == null)
+        if (obj is null)
         {
             return 0;
         }
 
-        int hashWord = obj.Word == null ? 0 : obj.Word.GetHashCode();
+        int hashWord = obj.Word is null ? 0 : obj.Word.GetHashCode();
         int hashCount = obj.Count.GetHashCode();
 
         return hashWord ^ hashCount;
