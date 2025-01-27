@@ -5,28 +5,31 @@ public class FileSearcherTests
         [Fact]
         public void Returns_all_files_in_directory_and_subdirectories()
         {
-            var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectory);
+            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(testDirectoryPath);
 
-            var subDirectory = Path.Combine(testDirectory, "subdir");
-            Directory.CreateDirectory(subDirectory);
+            var subDirectoryPath = Path.Combine(testDirectoryPath, "subdir");
+            Directory.CreateDirectory(subDirectoryPath);
 
-            var file1 = Path.Combine(testDirectory, "file1.txt");
-            var file2 = Path.Combine(subDirectory, "file2.txt");
+            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
+            var file2Path = Path.Combine(subDirectoryPath, "file2.txt");
+
+            File.WriteAllText(file1Path, "Test content");
+            File.WriteAllText(file2Path, "Test content");
 
             var sut = new FileSearcher();
 
             try
             {
-                var results = sut.GetAllFiles(testDirectory).ToArray();
+                var results = sut.GetAllFiles(testDirectoryPath).ToArray();
 
                 results.Length.ShouldBe(2);
-                results.ShouldContain(file1);
-                results.ShouldContain(file2);
+                results.ShouldContain(file1Path);
+                results.ShouldContain(file2Path);
             }
             finally
             {
-                Directory.Delete(testDirectory, true);
+                Directory.Delete(testDirectoryPath, true);
             }
         }
     }
