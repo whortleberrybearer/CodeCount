@@ -1,4 +1,4 @@
 {
-    "SourceDirectoryPath": ".",
-    "OutputFilePath": "output.json"
+    "sourceDirectoryPath": ".",
+    "outputFilePath": "output.json"
 }

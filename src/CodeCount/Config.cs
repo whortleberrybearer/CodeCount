@@ -1,6 +1,6 @@
 public record Config
 {
-    public string SourceDirectoryPath { get; init; }
+    public required string SourceDirectoryPath { get; init; }
 
-    public string OutputFilePath { get; init; }
+    public required string OutputFilePath { get; init; }
 }

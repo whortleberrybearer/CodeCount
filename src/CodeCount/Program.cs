@@ -22,12 +22,12 @@ class Program
         WriteOutputFile(wordCounts, config.OutputFilePath);
     }
 
-    private static Config ReadAndValidateConfig(string configFilePath)
+    private static Config? ReadAndValidateConfig(string configFilePath)
     {
         var configJson = File.ReadAllText(configFilePath);
         var config = JsonConvert.DeserializeObject<Config>(configJson);
 
-        if (string.IsNullOrEmpty(config.SourceDirectoryPath) || string.IsNullOrEmpty(config.OutputFilePath))
+        if (string.IsNullOrEmpty(config?.SourceDirectoryPath) || string.IsNullOrEmpty(config?.OutputFilePath))
         {
             Console.WriteLine("Source directory path and output file path must be specified in the config file.");
 
