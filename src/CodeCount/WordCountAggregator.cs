@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 public class WordCountAggregator
 {
     private readonly FileSearcher _fileSearcher;
@@ -39,7 +34,8 @@ public class WordCountAggregator
             }
         }
 
-        return wordCountDictionary.Select(kvp => new WordCountResult { Word = kvp.Key, Count = kvp.Value })
-                                  .OrderBy(result => result.Word);
+        return wordCountDictionary
+            .Select(kvp => new WordCountResult { Word = kvp.Key, Count = kvp.Value })
+            .OrderBy(result => result.Word);
     }
 }
