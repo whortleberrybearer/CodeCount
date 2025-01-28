@@ -5,15 +5,14 @@ public class WordCountAggregatorTests
         [Fact]
         public void Should_return_combined_word_counts_from_all_files()
         {
-            // Arrange
-            var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectory);
+            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(testDirectoryPath);
 
-            var file1 = Path.Combine(testDirectory, "file1.txt");
-            var file2 = Path.Combine(testDirectory, "file2.txt");
+            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
+            var file2Path = Path.Combine(testDirectoryPath, "file2.txt");
 
-            File.WriteAllText(file1, "hello world");
-            File.WriteAllText(file2, "hello universe");
+            File.WriteAllText(file1Path, "hello world");
+            File.WriteAllText(file2Path, "hello universe");
 
             var fileSearcher = new FileSearcher();
             var wordCounter = new WordCounter();
@@ -21,19 +20,47 @@ public class WordCountAggregatorTests
 
             try
             {
-                // Act
-                var result = aggregator.AggregateWordCounts(testDirectory).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
 
-                // Assert
-                result.Length.ShouldBe(3);
-                result.ShouldContain(r => r.Word == "hello" && r.Count == 2);
-                result.ShouldContain(r => r.Word == "world" && r.Count == 1);
-                result.ShouldContain(r => r.Word == "universe" && r.Count == 1);
+                results.Length.ShouldBe(3);
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
+                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "universe", Count = 1 });
             }
             finally
             {
-                // Cleanup
-                Directory.Delete(testDirectory, true);
+                Directory.Delete(testDirectoryPath, true);
+            }
+        }
+
+        [Fact]
+        public void Should_return_results_in_alphabetical_order()
+        {
+            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(testDirectoryPath);
+
+            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
+            var file2Path = Path.Combine(testDirectoryPath, "file2.txt");
+
+            File.WriteAllText(file1Path, "banana apple cherry");
+            File.WriteAllText(file2Path, "date fig grape");
+
+            var fileSearcher = new FileSearcher();
+            var wordCounter = new WordCounter();
+            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+
+            try
+            {
+                var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+
+                var expectedOrder = new[] { "apple", "banana", "cherry", "date", "fig", "grape" };
+                var actualOrder = results.Select(r => r.Word).ToArray();
+
+                actualOrder.ShouldBe(expectedOrder);
+            }
+            finally
+            {
+                Directory.Delete(testDirectoryPath, true);
             }
         }
     }
