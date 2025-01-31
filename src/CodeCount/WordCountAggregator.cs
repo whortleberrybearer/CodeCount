@@ -9,7 +9,7 @@ public class WordCountAggregator
         _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
     }
 
-    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath)
+    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath, int? maxResults = null)
     {
         var allFiles = _fileSearcher.GetAllFiles(directoryPath);
         var wordCountDictionary = new Dictionary<string, int>();
@@ -34,8 +34,16 @@ public class WordCountAggregator
             }
         }
 
-        return wordCountDictionary
-            .Select(kvp => new WordCountResult { Word = kvp.Key, Count = kvp.Value })
-            .OrderBy(result => result.Word);
+        var results = wordCountDictionary.Select(kvp => new WordCountResult { Word = kvp.Key, Count = kvp.Value });
+
+        if (maxResults.HasValue)
+        {
+            results = results
+                .OrderByDescending(result => result.Count)
+                .ThenBy(result => result.Word)
+                .Take(maxResults.Value);
+        }
+
+        return results.OrderBy(result => result.Word);
     }
 }
