@@ -6,9 +6,10 @@ on:
 
 jobs:
   validate-pr-title:
+    name: Validate PR title
     runs-on: ubuntu-latest
     steps:
-      - name: Validate PR title
+      - name: Validate
         uses:  ytanikin/pr-conventional-commits@1.4.0
         with:
           task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
