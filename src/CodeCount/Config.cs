@@ -1,8 +1,7 @@
 public record Config
 {
     public required string SourceDirectoryPath { get; init; }
-
     public required string OutputFilePath { get; init; }
-
-    public int? MaxResults { get; init; } 
+    public int? MaxResults { get; init; }
+    public string[]? ValidFileExtensions { get; init; }
 }
