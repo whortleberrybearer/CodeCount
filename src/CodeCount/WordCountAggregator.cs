@@ -9,13 +9,18 @@ public class WordCountAggregator
         _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
     }
 
-    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath, int? maxResults = null)
+    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath, string[]? fileExtensions = null, int? maxResults = null)
     {
         var allFiles = _fileSearcher.GetAllFiles(directoryPath);
         var wordCountDictionary = new Dictionary<string, int>();
 
         foreach (var file in allFiles)
         {
+            if (fileExtensions is not null && !fileExtensions.Contains(Path.GetExtension(file)))
+            {
+                continue;
+            }
+
             using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
                 var wordCounts = _wordCounter.GetWordCounts(stream);
