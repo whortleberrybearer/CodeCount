@@ -8,6 +8,7 @@ public class WordCountAggregatorTests
         public void Should_return_combined_word_counts_from_all_files()
         {
             var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+
             var mockFileSearcher = new Mock<IFileSearcher>();
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
@@ -38,6 +39,7 @@ public class WordCountAggregatorTests
         public void Should_return_results_in_alphabetical_order()
         {
             var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+
             var mockFileSearcher = new Mock<IFileSearcher>();
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
@@ -67,31 +69,38 @@ public class WordCountAggregatorTests
         [Fact]
         public void Should_ignore_files_with_different_extensions()
         {
-            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectoryPath);
+            var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+            var fileExtensions = new[] { ".txt" };
 
-            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
-            var file2Path = Path.Combine(testDirectoryPath, "file2.md");
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
 
-            File.WriteAllText(file1Path, "hello world");
-            File.WriteAllText(file2Path, "hello universe");
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
+            mockFile1
+                .Setup(f => f.HasValidExtension(fileExtensions))
+                .Returns(true);
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
+            mockFile2
+                .Setup(f => f.HasValidExtension(fileExtensions))
+                .Returns(false);
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            mockFileSearcher
+                .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            try
-            {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                results.Length.ShouldBe(2);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
-            }
-            finally
-            {
-                Directory.Delete(testDirectoryPath, true);
-            }
+            var results = aggregator.AggregateWordCounts(testDirectoryPath, fileExtensions).ToArray();
+
+            results.Length.ShouldBe(2);
+            results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+            results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
         }
 
         public class And_max_results_specified
@@ -100,6 +109,7 @@ public class WordCountAggregatorTests
             public void Should_return_highest_count_words_in_alphabetical_order()
             {
                 var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+
                 var mockFileSearcher = new Mock<IFileSearcher>();
                 var mockWordCounter = new Mock<IWordCounter>();
                 var mockFile1 = new Mock<IFileInfo>();
