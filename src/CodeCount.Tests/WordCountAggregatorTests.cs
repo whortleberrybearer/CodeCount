@@ -20,12 +20,13 @@ public class WordCountAggregatorTests
 
             try
             {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" });
 
-                results.Length.ShouldBe(3);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "universe", Count = 1 });
+                results.SubDirectories.ShouldBeEmpty();
+                results.Directory.ShouldBe(testDirectoryPath);
+                results.WordCounts.ShouldContain(new WordCountResult { Word = "hello", Count = 2 });
+                results.WordCounts.ShouldContain(new WordCountResult { Word = "world", Count = 1 });
+                results.WordCounts.ShouldContain(new WordCountResult { Word = "universe", Count = 1 });
             }
             finally
             {
@@ -51,10 +52,10 @@ public class WordCountAggregatorTests
 
             try
             {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" });
 
                 var expectedOrder = new[] { "apple", "banana", "cherry", "date", "fig", "grape" };
-                var actualOrder = results.Select(r => r.Word).ToArray();
+                var actualOrder = results.WordCounts.Select(r => r.Word).ToArray();
 
                 actualOrder.ShouldBe(expectedOrder);
             }
@@ -82,11 +83,11 @@ public class WordCountAggregatorTests
 
             try
             {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" });
 
-                results.Length.ShouldBe(2);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+                results.WordCounts.Count().ShouldBe(2);
+                results.WordCounts.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.WordCounts.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
             }
             finally
             {
@@ -114,10 +115,10 @@ public class WordCountAggregatorTests
 
                 try
                 {
-                    var results = aggregator.AggregateWordCounts(testDirectory, new[] { ".txt" }, 2).ToArray();
+                    var results = aggregator.AggregateWordCounts(testDirectory, new[] { ".txt" }, 2);
 
                     var expectedOrder = new[] { "hello", "world" };
-                    var actualOrder = results.Select(r => r.Word).ToArray();
+                    var actualOrder = results.WordCounts.Select(r => r.Word).ToArray();
 
                     actualOrder.ShouldBe(expectedOrder);
                 }
