@@ -16,20 +16,17 @@ public class WordCountAggregator
 
         foreach (var file in allFiles)
         {
-            using (var stream = file.OpenRead())
-            {
-                var wordCounts = _wordCounter.GetWordCounts(stream);
+            var wordCounts = file.GetWordCounts(_wordCounter);
 
-                foreach (var wordCount in wordCounts)
+            foreach (var wordCount in wordCounts)
+            {
+                if (wordCountDictionary.ContainsKey(wordCount.Key))
                 {
-                    if (wordCountDictionary.ContainsKey(wordCount.Key))
-                    {
-                        wordCountDictionary[wordCount.Key] += wordCount.Value;
-                    }
-                    else
-                    {
-                        wordCountDictionary[wordCount.Key] = wordCount.Value;
-                    }
+                    wordCountDictionary[wordCount.Key] += wordCount.Value;
+                }
+                else
+                {
+                    wordCountDictionary[wordCount.Key] = wordCount.Value;
                 }
             }
         }

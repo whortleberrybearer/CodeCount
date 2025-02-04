@@ -12,21 +12,17 @@ public class WordCountAggregatorTests
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
             var mockFile2 = new Mock<IFileInfo>();
-            var stream1 = new MemoryStream();
-            var stream2 = new MemoryStream();
 
-            mockFile1.Setup(f => f.OpenRead()).Returns(stream1);
-            mockFile2.Setup(f => f.OpenRead()).Returns(stream2);
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
             mockFileSearcher
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                 .Returns(new[] { mockFile1.Object, mockFile2.Object });
-            mockWordCounter
-                .Setup(wc => wc.GetWordCounts(stream1))
-                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
-            mockWordCounter
-                .Setup(wc => wc.GetWordCounts(stream2))
-                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
             var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
@@ -46,21 +42,17 @@ public class WordCountAggregatorTests
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
             var mockFile2 = new Mock<IFileInfo>();
-            var stream1 = new MemoryStream();
-            var stream2 = new MemoryStream();
 
-            mockFile1.Setup(f => f.OpenRead()).Returns(stream1);
-            mockFile2.Setup(f => f.OpenRead()).Returns(stream2);
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "banana", 1 }, { "apple", 1 }, { "cherry", 1 }, { "grape", 1 } });
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "date", 1 }, { "fig", 1 }, { "grape", 1 } });
 
             mockFileSearcher
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                 .Returns(new[] { mockFile1.Object, mockFile2.Object });
-            mockWordCounter
-                .Setup(wc => wc.GetWordCounts(stream1))
-                .Returns(new Dictionary<string, int> { { "banana", 1 }, { "apple", 1 }, { "cherry", 1 }, { "grape", 1 } });
-            mockWordCounter
-                .Setup(wc => wc.GetWordCounts(stream2))
-                .Returns(new Dictionary<string, int> { { "date", 1 }, { "fig", 1 }, { "grape", 1 } });
 
             var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
@@ -82,21 +74,17 @@ public class WordCountAggregatorTests
                 var mockWordCounter = new Mock<IWordCounter>();
                 var mockFile1 = new Mock<IFileInfo>();
                 var mockFile2 = new Mock<IFileInfo>();
-                var stream1 = new MemoryStream();
-                var stream2 = new MemoryStream();
 
-                mockFile1.Setup(f => f.OpenRead()).Returns(stream1);
-                mockFile2.Setup(f => f.OpenRead()).Returns(stream2);
+                mockFile1
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 2 }, { "world", 2 } });
+                mockFile2
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
                 mockFileSearcher
                     .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                     .Returns(new[] { mockFile1.Object, mockFile2.Object });
-                mockWordCounter
-                    .Setup(wc => wc.GetWordCounts(stream1))
-                    .Returns(new Dictionary<string, int> { { "hello", 2 }, { "world", 2 } });
-                mockWordCounter
-                    .Setup(wc => wc.GetWordCounts(stream2))
-                    .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
                 var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
