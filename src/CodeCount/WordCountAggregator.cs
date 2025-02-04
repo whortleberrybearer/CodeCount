@@ -22,13 +22,13 @@ public class WordCountAggregator
 
                 foreach (var wordCount in wordCounts)
                 {
-                    if (wordCountDictionary.ContainsKey(wordCount.Word))
+                    if (wordCountDictionary.ContainsKey(wordCount.Key))
                     {
-                        wordCountDictionary[wordCount.Word] += wordCount.Count;
+                        wordCountDictionary[wordCount.Key] += wordCount.Value;
                     }
                     else
                     {
-                        wordCountDictionary[wordCount.Word] = wordCount.Count;
+                        wordCountDictionary[wordCount.Key] = wordCount.Value;
                     }
                 }
             }
