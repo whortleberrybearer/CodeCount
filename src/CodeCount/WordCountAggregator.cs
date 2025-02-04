@@ -16,7 +16,7 @@ public class WordCountAggregator
 
         foreach (var file in allFiles)
         {
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+            using (var stream = file.OpenRead())
             {
                 var wordCounts = _wordCounter.GetWordCounts(stream);
 

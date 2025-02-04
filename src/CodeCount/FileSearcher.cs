@@ -1,12 +1,14 @@
 public interface IFileSearcher
 {
-    IEnumerable<string> GetAllFiles(string directoryPath);
+    IEnumerable<FileInfo> GetAllFiles(string directoryPath);
 }
 
 public class FileSearcher : IFileSearcher
 {
-    public IEnumerable<string> GetAllFiles(string directoryPath)
+    public IEnumerable<FileInfo> GetAllFiles(string directoryPath)
     {
-        return Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+        var directoryInfo = new DirectoryInfo(directoryPath);
+
+        return directoryInfo.GetFiles("*.*", SearchOption.AllDirectories);
     }
 }
