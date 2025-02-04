@@ -17,7 +17,7 @@ class Program
         var wordCounter = new WordCounter();
         var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
 
-        var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath, config.MaxResults);
+        var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath, config.ValidFileExtensions, config.MaxResults);
 
         WriteOutputFile(wordCounts, config.OutputFilePath);
     }

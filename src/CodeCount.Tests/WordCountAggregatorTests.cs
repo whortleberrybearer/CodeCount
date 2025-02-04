@@ -26,7 +26,7 @@ public class WordCountAggregatorTests
 
             var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-            var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+            var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
 
             results.Length.ShouldBe(3);
             results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
@@ -56,12 +56,42 @@ public class WordCountAggregatorTests
 
             var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-            var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+            var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
 
             var expectedOrder = new[] { "apple", "banana", "cherry", "date", "fig", "grape" };
             var actualOrder = results.Select(r => r.Word).ToArray();
 
             actualOrder.ShouldBe(expectedOrder);
+        }
+
+        [Fact]
+        public void Should_ignore_files_with_different_extensions()
+        {
+            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(testDirectoryPath);
+
+            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
+            var file2Path = Path.Combine(testDirectoryPath, "file2.md");
+
+            File.WriteAllText(file1Path, "hello world");
+            File.WriteAllText(file2Path, "hello universe");
+
+            var fileSearcher = new FileSearcher();
+            var wordCounter = new WordCounter();
+            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+
+            try
+            {
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+
+                results.Length.ShouldBe(2);
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+            }
+            finally
+            {
+                Directory.Delete(testDirectoryPath, true);
+            }
         }
 
         public class And_max_results_specified
@@ -88,7 +118,7 @@ public class WordCountAggregatorTests
 
                 var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, 2).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }, 2).ToArray();
 
                 var expectedOrder = new[] { "hello", "world" };
                 var actualOrder = results.Select(r => r.Word).ToArray();
