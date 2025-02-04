@@ -14,9 +14,35 @@ public class WordCountAggregatorTests
             File.WriteAllText(file1Path, "hello world");
             File.WriteAllText(file2Path, "hello universe");
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
+
+            mockFile1.Setup(f => f.FullName).Returns(file1Path);
+            mockFile1.Setup(f => f.OpenRead()).Returns(() => new FileStream(file1Path, FileMode.Open, FileAccess.Read));
+            mockFile2.Setup(f => f.FullName).Returns(file2Path);
+            mockFile2.Setup(f => f.OpenRead()).Returns(() => new FileStream(file2Path, FileMode.Open, FileAccess.Read));
+
+            mockFileSearcher.Setup(fs => fs.GetAllFiles(testDirectoryPath)).Returns(new[] { mockFile1.Object, mockFile2.Object });
+            mockWordCounter.Setup(wc => wc.GetWordCounts(It.IsAny<Stream>())).Returns<Stream>(stream =>
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var text = reader.ReadToEnd();
+                    if (text == "hello world")
+                    {
+                        return new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } };
+                    }
+                    else if (text == "hello universe")
+                    {
+                        return new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } };
+                    }
+                    return new Dictionary<string, int>();
+                }
+            });
+
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
             try
             {
@@ -45,9 +71,35 @@ public class WordCountAggregatorTests
             File.WriteAllText(file1Path, "banana apple cherry grape");
             File.WriteAllText(file2Path, "date fig grape");
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
+
+            mockFile1.Setup(f => f.FullName).Returns(file1Path);
+            mockFile1.Setup(f => f.OpenRead()).Returns(() => new FileStream(file1Path, FileMode.Open, FileAccess.Read));
+            mockFile2.Setup(f => f.FullName).Returns(file2Path);
+            mockFile2.Setup(f => f.OpenRead()).Returns(() => new FileStream(file2Path, FileMode.Open, FileAccess.Read));
+
+            mockFileSearcher.Setup(fs => fs.GetAllFiles(testDirectoryPath)).Returns(new[] { mockFile1.Object, mockFile2.Object });
+            mockWordCounter.Setup(wc => wc.GetWordCounts(It.IsAny<Stream>())).Returns<Stream>(stream =>
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var text = reader.ReadToEnd();
+                    if (text == "banana apple cherry grape")
+                    {
+                        return new Dictionary<string, int> { { "banana", 1 }, { "apple", 1 }, { "cherry", 1 }, { "grape", 1 } };
+                    }
+                    else if (text == "date fig grape")
+                    {
+                        return new Dictionary<string, int> { { "date", 1 }, { "fig", 1 }, { "grape", 1 } };
+                    }
+                    return new Dictionary<string, int>();
+                }
+            });
+
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
             try
             {
@@ -78,13 +130,39 @@ public class WordCountAggregatorTests
                 File.WriteAllText(file1, "hello world hello world");
                 File.WriteAllText(file2, "universe world");
 
-                var fileSearcher = new FileSearcher();
-                var wordCounter = new WordCounter();
-                var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+                var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounter = new Mock<IWordCounter>();
+                var mockFile1 = new Mock<IFileInfo>();
+                var mockFile2 = new Mock<IFileInfo>();
+
+                mockFile1.Setup(f => f.FullName).Returns(file1);
+                mockFile1.Setup(f => f.OpenRead()).Returns(() => new FileStream(file1, FileMode.Open, FileAccess.Read));
+                mockFile2.Setup(f => f.FullName).Returns(file2);
+                mockFile2.Setup(f => f.OpenRead()).Returns(() => new FileStream(file2, FileMode.Open, FileAccess.Read));
+
+                mockFileSearcher.Setup(fs => fs.GetAllFiles(testDirectory)).Returns(new[] { mockFile1.Object, mockFile2.Object });
+                mockWordCounter.Setup(wc => wc.GetWordCounts(It.IsAny<Stream>())).Returns<Stream>(stream =>
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var text = reader.ReadToEnd();
+                        if (text == "hello world hello world")
+                        {
+                            return new Dictionary<string, int> { { "hello", 2 }, { "world", 2 } };
+                        }
+                        else if (text == "universe world")
+                        {
+                            return new Dictionary<string, int> { { "universe", 1 }, { "world", 1 } };
+                        }
+                        return new Dictionary<string, int>();
+                    }
+                });
+
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
                 try
                 {
-                    var results = aggregator.AggregateWordCounts(testDirectory, 2).ToArray(); 
+                    var results = aggregator.AggregateWordCounts(testDirectory, 2).ToArray();
 
                     var expectedOrder = new[] { "hello", "world" };
                     var actualOrder = results.Select(r => r.Word).ToArray();
