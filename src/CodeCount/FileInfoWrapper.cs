@@ -10,11 +10,9 @@ public class FileInfoWrapper : IFileInfo
 
     public string FullName => _fileInfo.FullName;
 
-    public Stream OpenRead() => _fileInfo.OpenRead();
-
     public IDictionary<string, int> GetWordCounts(IWordCounter wordCounter)
     {
-        using (var stream = OpenRead())
+        using (var stream = _fileInfo.OpenRead())
         {
             return wordCounter.GetWordCounts(stream);
         }
