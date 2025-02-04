@@ -1,3 +1,5 @@
+using Moq;
+
 public class WordCountAggregatorTests
 {
     public class When_aggregating_word_counts
@@ -5,93 +7,100 @@ public class WordCountAggregatorTests
         [Fact]
         public void Should_return_combined_word_counts_from_all_files()
         {
-            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectoryPath);
+            var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
-            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
-            var file2Path = Path.Combine(testDirectoryPath, "file2.txt");
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
 
-            File.WriteAllText(file1Path, "hello world");
-            File.WriteAllText(file2Path, "hello universe");
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            mockFileSearcher
+                .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            try
-            {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                results.Length.ShouldBe(3);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "universe", Count = 1 });
-            }
-            finally
-            {
-                Directory.Delete(testDirectoryPath, true);
-            }
+            var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+
+            results.Length.ShouldBe(3);
+            results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
+            results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+            results.ShouldContain(new WordCountResult() { Word = "universe", Count = 1 });
         }
 
         [Fact]
         public void Should_return_results_in_alphabetical_order()
         {
-            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectoryPath);
+            var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
-            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
-            var file2Path = Path.Combine(testDirectoryPath, "file2.txt");
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
 
-            File.WriteAllText(file1Path, "banana apple cherry grape");
-            File.WriteAllText(file2Path, "date fig grape");
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "banana", 1 }, { "apple", 1 }, { "cherry", 1 }, { "grape", 1 } });
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "date", 1 }, { "fig", 1 }, { "grape", 1 } });
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            mockFileSearcher
+                .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            try
-            {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                var expectedOrder = new[] { "apple", "banana", "cherry", "date", "fig", "grape" };
-                var actualOrder = results.Select(r => r.Word).ToArray();
+            var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
 
-                actualOrder.ShouldBe(expectedOrder);
-            }
-            finally
-            {
-                Directory.Delete(testDirectoryPath, true);
-            }
+            var expectedOrder = new[] { "apple", "banana", "cherry", "date", "fig", "grape" };
+            var actualOrder = results.Select(r => r.Word).ToArray();
+
+            actualOrder.ShouldBe(expectedOrder);
         }
 
         [Fact]
         public void Should_ignore_files_with_different_extensions()
         {
-            var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(testDirectoryPath);
+            var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+            var fileExtensions = new[] { ".txt" };
 
-            var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
-            var file2Path = Path.Combine(testDirectoryPath, "file2.md");
+            var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounter = new Mock<IWordCounter>();
+            var mockFile1 = new Mock<IFileInfo>();
+            var mockFile2 = new Mock<IFileInfo>();
 
-            File.WriteAllText(file1Path, "hello world");
-            File.WriteAllText(file2Path, "hello universe");
+            mockFile1
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
+            mockFile1
+                .Setup(f => f.HasValidExtension(fileExtensions))
+                .Returns(true);
+            mockFile2
+                .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
+            mockFile2
+                .Setup(f => f.HasValidExtension(fileExtensions))
+                .Returns(false);
 
-            var fileSearcher = new FileSearcher();
-            var wordCounter = new WordCounter();
-            var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+            mockFileSearcher
+                .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            try
-            {
-                var results = aggregator.AggregateWordCounts(testDirectoryPath, new[] { ".txt" }).ToArray();
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                results.Length.ShouldBe(2);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
-            }
-            finally
-            {
-                Directory.Delete(testDirectoryPath, true);
-            }
+            var results = aggregator.AggregateWordCounts(testDirectoryPath, fileExtensions).ToArray();
+
+            results.Length.ShouldBe(2);
+            results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+            results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
         }
 
         public class And_max_results_specified
@@ -99,32 +108,32 @@ public class WordCountAggregatorTests
             [Fact]
             public void Should_return_highest_count_words_in_alphabetical_order()
             {
-                var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(testDirectory);
+                var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
-                var file1 = Path.Combine(testDirectory, "file1.txt");
-                var file2 = Path.Combine(testDirectory, "file2.txt");
+                var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounter = new Mock<IWordCounter>();
+                var mockFile1 = new Mock<IFileInfo>();
+                var mockFile2 = new Mock<IFileInfo>();
 
-                File.WriteAllText(file1, "hello world hello world");
-                File.WriteAllText(file2, "universe world");
+                mockFile1
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 2 }, { "world", 2 } });
+                mockFile2
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
 
-                var fileSearcher = new FileSearcher();
-                var wordCounter = new WordCounter();
-                var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+                mockFileSearcher
+                    .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                    .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-                try
-                {
-                    var results = aggregator.AggregateWordCounts(testDirectory, new[] { ".txt" }, 2).ToArray();
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
 
-                    var expectedOrder = new[] { "hello", "world" };
-                    var actualOrder = results.Select(r => r.Word).ToArray();
+                var results = aggregator.AggregateWordCounts(testDirectoryPath, maxResults: 2).ToArray();
 
-                    actualOrder.ShouldBe(expectedOrder);
-                }
-                finally
-                {
-                    Directory.Delete(testDirectory, true);
-                }
+                var expectedOrder = new[] { "hello", "world" };
+                var actualOrder = results.Select(r => r.Word).ToArray();
+
+                actualOrder.ShouldBe(expectedOrder);
             }
         }
     }

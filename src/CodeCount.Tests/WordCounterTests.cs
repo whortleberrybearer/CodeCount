@@ -24,7 +24,7 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString(string.Empty))
             {
-                var result = wordCounter.GetWordCounts(stream).ToArray();
+                var result = wordCounter.GetWordCounts(stream);
 
                 result.ShouldBeEmpty();
             }
@@ -37,10 +37,10 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString("hello"))
             {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
+                var results = wordCounter.GetWordCounts(stream);
 
-                results.Length.ShouldBe(1);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.Count.ShouldBe(1);
+                results.ShouldContainKeyAndValue("hello", 1);
             }
         }
 
@@ -51,11 +51,11 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString("hello world hello"))
             {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
+                var results = wordCounter.GetWordCounts(stream);
                 
-                results.Length.ShouldBe(2);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 2 });
-                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+                results.Count.ShouldBe(2);
+                results.ShouldContainKeyAndValue("hello", 2);
+                results.ShouldContainKeyAndValue("world", 1);
             }
         }
 
@@ -66,10 +66,10 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString("Hello hello HELLO"))
             {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
+                var results = wordCounter.GetWordCounts(stream);
 
-                results.Length.ShouldBe(1);
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 3 });
+                results.Count.ShouldBe(1);
+                results.ShouldContainKeyAndValue("hello", 3);
             }
         }
 
@@ -80,32 +80,15 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString("Dave: Hello Steve1.\r\nSteve2: Hi! It's not Steve1."))
             {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
+                var results = wordCounter.GetWordCounts(stream);
 
-                results.Length.ShouldBe(6);
-                results.ShouldContain(new WordCountResult() { Word = "dave", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "steve", Count = 3 });
-                results.ShouldContain(new WordCountResult() { Word = "hi", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "it", Count = 1 });
-                results.ShouldContain(new WordCountResult() { Word = "not", Count = 1 });
-            }
-        }
-
-        [Fact]
-        public void Results_should_be_in_alphabetical_order()
-        {
-            var wordCounter = new WordCounter();
-
-            using (var stream = GenerateStreamFromString("The quick brown fox"))
-            {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
-
-                results.Length.ShouldBe(4);
-                results[0].Word.ShouldBe("brown");
-                results[1].Word.ShouldBe("fox");
-                results[2].Word.ShouldBe("quick");
-                results[3].Word.ShouldBe("the");
+                results.Count.ShouldBe(6);
+                results.ShouldContainKeyAndValue("dave", 1);
+                results.ShouldContainKeyAndValue("hello", 1);
+                results.ShouldContainKeyAndValue("steve", 3);
+                results.ShouldContainKeyAndValue("hi", 1);
+                results.ShouldContainKeyAndValue("it", 1);
+                results.ShouldContainKeyAndValue("not", 1);
             }
         }
 
@@ -116,10 +99,10 @@ public class WordCounterTests
 
             using (var stream = GenerateStreamFromString("a b c word"))
             {
-                var results = wordCounter.GetWordCounts(stream).ToArray();
+                var results = wordCounter.GetWordCounts(stream);
 
-                results.Count().ShouldBe(1);
-                results.ShouldContain(new WordCountResult() { Word = "word", Count = 1 });
+                results.Count.ShouldBe(1);
+                results.ShouldContainKeyAndValue("word", 1);
             }
         }
     }

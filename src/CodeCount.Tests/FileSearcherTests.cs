@@ -24,8 +24,8 @@ public class FileSearcherTests
                 var results = sut.GetAllFiles(testDirectoryPath).ToArray();
 
                 results.Length.ShouldBe(2);
-                results.ShouldContain(file1Path);
-                results.ShouldContain(file2Path);
+                results.ShouldContain(file => file.FullName == file1Path);
+                results.ShouldContain(file => file.FullName == file2Path);
             }
             finally
             {

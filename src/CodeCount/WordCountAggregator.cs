@@ -1,9 +1,9 @@
 public class WordCountAggregator
 {
-    private readonly FileSearcher _fileSearcher;
-    private readonly WordCounter _wordCounter;
+    private readonly IFileSearcher _fileSearcher;
+    private readonly IWordCounter _wordCounter;
 
-    public WordCountAggregator(FileSearcher fileSearcher, WordCounter wordCounter)
+    public WordCountAggregator(IFileSearcher fileSearcher, IWordCounter wordCounter)
     {
         _fileSearcher = fileSearcher ?? throw new ArgumentNullException(nameof(fileSearcher));
         _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
@@ -16,25 +16,22 @@ public class WordCountAggregator
 
         foreach (var file in allFiles)
         {
-            if (fileExtensions is not null && !fileExtensions.Contains(Path.GetExtension(file)))
+            if (fileExtensions is not null && !file.HasValidExtension(fileExtensions))
             {
                 continue;
             }
 
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
-            {
-                var wordCounts = _wordCounter.GetWordCounts(stream);
+            var wordCounts = file.GetWordCounts(_wordCounter);
 
-                foreach (var wordCount in wordCounts)
+            foreach (var wordCount in wordCounts)
+            {
+                if (wordCountDictionary.ContainsKey(wordCount.Key))
                 {
-                    if (wordCountDictionary.ContainsKey(wordCount.Word))
-                    {
-                        wordCountDictionary[wordCount.Word] += wordCount.Count;
-                    }
-                    else
-                    {
-                        wordCountDictionary[wordCount.Word] = wordCount.Count;
-                    }
+                    wordCountDictionary[wordCount.Key] += wordCount.Value;
+                }
+                else
+                {
+                    wordCountDictionary[wordCount.Key] = wordCount.Value;
                 }
             }
         }

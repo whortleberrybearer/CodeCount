@@ -1,8 +1,13 @@
 using System.Text.RegularExpressions;
 
-public class WordCounter
+public interface IWordCounter
 {
-    public IEnumerable<WordCountResult> GetWordCounts(Stream stream)
+    IDictionary<string, int> GetWordCounts(Stream stream);
+}
+
+public class WordCounter : IWordCounter
+{
+    public IDictionary<string, int> GetWordCounts(Stream stream)
     {
         if (stream is null)
         {
@@ -11,19 +16,16 @@ public class WordCounter
 
         if (stream.Length == 0)
         {
-            return Enumerable.Empty<WordCountResult>();
+            return new Dictionary<string, int>();
         }
 
         using (var reader = new StreamReader(stream))
         {
             var text = reader.ReadToEnd();
-            
             return Regex.Split(text, @"[^a-zA-Z]+")
                 .Where(word => word.Length > 1) // Ignore single-letter words
                 .GroupBy(word => word.ToLower())
-                .Select(group => new WordCountResult { Word = group.Key, Count = group.Count() })
-                .OrderBy(result => result.Word) // Ensure results are in alphabetical order
-                .ToArray();
+                .ToDictionary(group => group.Key, group => group.Count());
         }
     }
 }
