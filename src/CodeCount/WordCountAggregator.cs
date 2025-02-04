@@ -16,7 +16,7 @@ public class WordCountAggregator
 
         foreach (var file in allFiles)
         {
-            if (fileExtensions is not null && !fileExtensions.Contains(Path.GetExtension(file)))
+            if (fileExtensions is not null && !file.HasValidExtension(fileExtensions))
             {
                 continue;
             }
