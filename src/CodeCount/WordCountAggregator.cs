@@ -18,8 +18,11 @@ public class WordCountAggregator
         {
             if (fileExtensions is not null && !file.HasValidExtension(fileExtensions))
             {
+                Console.WriteLine($"Skipping file (invalid extension): {file.FullName}");
                 continue;
             }
+
+            Console.WriteLine($"Processing file: {file.FullName}");
 
             var wordCounts = file.GetWordCounts(_wordCounter);
 
