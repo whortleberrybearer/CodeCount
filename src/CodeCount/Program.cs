@@ -37,7 +37,7 @@ class Program
         return config;
     }
 
-    private static void WriteOutputFile(IEnumerable<WordCountResult> wordCounts, string outputFilePath)
+    private static void WriteOutputFile(WordCountResults wordCounts, string outputFilePath)
     {
         var json = JsonConvert.SerializeObject(wordCounts, Formatting.Indented);
         File.WriteAllText(outputFilePath, json);
