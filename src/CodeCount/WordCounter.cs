@@ -1,6 +1,11 @@
 using System.Text.RegularExpressions;
 
-public class WordCounter
+public interface IWordCounter
+{
+    IDictionary<string, int> GetWordCounts(Stream stream);
+}
+
+public class WordCounter : IWordCounter
 {
     public IDictionary<string, int> GetWordCounts(Stream stream)
     {

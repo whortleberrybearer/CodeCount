@@ -1,9 +1,9 @@
 public class WordCountAggregator
 {
-    private readonly FileSearcher _fileSearcher;
-    private readonly WordCounter _wordCounter;
+    private readonly IFileSearcher _fileSearcher;
+    private readonly IWordCounter _wordCounter;
 
-    public WordCountAggregator(FileSearcher fileSearcher, WordCounter wordCounter)
+    public WordCountAggregator(IFileSearcher fileSearcher, IWordCounter wordCounter)
     {
         _fileSearcher = fileSearcher ?? throw new ArgumentNullException(nameof(fileSearcher));
         _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
