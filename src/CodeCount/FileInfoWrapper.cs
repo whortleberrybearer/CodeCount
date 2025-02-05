@@ -22,9 +22,9 @@ public class FileInfoWrapper : IFileInfo
 
     public IDictionary<string, int> GetWordCounts(IWordCounter wordCounter)
     {
-        using (var stream = _fileInfo.OpenRead())
+        using (var streamReader = _fileInfo.OpenText())
         {
-            return wordCounter.GetWordCounts(stream);
+            return wordCounter.GetWordCounts(streamReader.ReadToEnd());
         }
     }
 }
