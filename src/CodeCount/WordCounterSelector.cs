@@ -1,40 +1,47 @@
+using Microsoft.Extensions.FileSystemGlobbing;
+
 public interface IWordCounterSelector
 {
-    void RegisterWordCounter(string extension, IWordCounter wordCounter);
+    void RegisterWordCounter(IEnumerable<string> filters, IWordCounter wordCounter);
     IWordCounter? SelectWordCounter(string filePath);
 }
 
 public class WordCounterSelector : IWordCounterSelector
 {
-    private readonly Dictionary<string, IWordCounter> _wordCounters = new();
+    // This is a list so if a path is registered multiple times, the first one will be used.
+    private readonly List<(Matcher, IWordCounter)> _wordCounters = new();
 
-// TODO: Need to turn this into globs.
-    public void RegisterWordCounter(string extension, IWordCounter wordCounter)
+    public void RegisterWordCounter(IEnumerable<string> filters, IWordCounter wordCounter)
     {
         if (wordCounter is null)
         {
             throw new ArgumentNullException(nameof(wordCounter));
         }
 
-        if (extension is null)
+        if (filters is null)
         {
-            throw new ArgumentNullException(nameof(extension));
+            throw new ArgumentNullException(nameof(filters));
         }
 
-        if (string.IsNullOrEmpty(extension))
+        if (!filters.Any())
         {
-            throw new ArgumentException("Extension cannot be empty.", nameof(extension));
+            throw new ArgumentException($"{nameof(filters)} cannot be empty.", nameof(filters));
         }
 
-        _wordCounters[extension] = wordCounter;
+        var matcher = new Matcher();
+        matcher.AddIncludePatterns(filters);
+
+        _wordCounters.Add((matcher, wordCounter));
     }
 
     public IWordCounter? SelectWordCounter(string filePath)
     {
-        var extension = Path.GetExtension(filePath)?.ToLower();
-        if (extension != null && _wordCounters.TryGetValue(extension, out var wordCounter))
+        foreach (var (matcher, wordCounter) in _wordCounters)
         {
-            return wordCounter;
+            if (matcher.Match(filePath).HasMatches)
+            {
+                return wordCounter;
+            }
         }
 
         return null;
