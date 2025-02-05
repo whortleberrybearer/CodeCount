@@ -6,6 +6,9 @@ public class WordCounterSelectorTests
         public void Should_return_null_if_no_word_counter_registered()
         {
             var selector = new WordCounterSelector();
+            var mockWordCounter = new Mock<IWordCounter>();
+
+            selector.RegisterWordCounter(new[] { "**/*.doc" }, mockWordCounter.Object);
 
             var selectedCounter = selector.SelectWordCounter("file.txt");
 
@@ -18,7 +21,7 @@ public class WordCounterSelectorTests
             var selector = new WordCounterSelector();
             var mockWordCounter = new Mock<IWordCounter>();
 
-            selector.RegisterWordCounter(new[] { "**/*" }, mockWordCounter.Object);
+            selector.RegisterWordCounter(new[] { "**/*.txt" }, mockWordCounter.Object);
 
             var selectedCounter = selector.SelectWordCounter("file.txt");
 
