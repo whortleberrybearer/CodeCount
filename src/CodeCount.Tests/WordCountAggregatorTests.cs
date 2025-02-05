@@ -1,5 +1,3 @@
-using Moq;
-
 public class WordCountAggregatorTests
 {
     public class When_aggregating_word_counts
@@ -10,6 +8,7 @@ public class WordCountAggregatorTests
             var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
             var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounterSelector = new Mock<IWordCounterSelector>();
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
             var mockFile2 = new Mock<IFileInfo>();
@@ -25,7 +24,14 @@ public class WordCountAggregatorTests
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                 .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile1.Object.FullName))
+                .Returns(mockWordCounter.Object);
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile2.Object.FullName))
+                .Returns(mockWordCounter.Object);
+
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object);
 
             var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
 
@@ -41,6 +47,7 @@ public class WordCountAggregatorTests
             var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
             var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounterSelector = new Mock<IWordCounterSelector>();
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
             var mockFile2 = new Mock<IFileInfo>();
@@ -56,7 +63,14 @@ public class WordCountAggregatorTests
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                 .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object);
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile1.Object.FullName))
+                .Returns(mockWordCounter.Object);
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile2.Object.FullName))
+                .Returns(mockWordCounter.Object);
+
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object);
 
             var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
 
@@ -73,6 +87,7 @@ public class WordCountAggregatorTests
             var fileExtensions = new[] { ".txt" };
 
             var mockFileSearcher = new Mock<IFileSearcher>();
+            var mockWordCounterSelector = new Mock<IWordCounterSelector>();
             var mockWordCounter = new Mock<IWordCounter>();
             var mockFile1 = new Mock<IFileInfo>();
             var mockFile2 = new Mock<IFileInfo>();
@@ -94,7 +109,14 @@ public class WordCountAggregatorTests
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                 .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object)
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile1.Object.FullName))
+                .Returns(mockWordCounter.Object);
+            mockWordCounterSelector
+                .Setup(s => s.SelectWordCounter(mockFile2.Object.FullName))
+                .Returns(mockWordCounter.Object);
+
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
             {
                 FileExtensions = fileExtensions
             };
@@ -114,6 +136,7 @@ public class WordCountAggregatorTests
                 var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
                 var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounterSelector = new Mock<IWordCounterSelector>();
                 var mockWordCounter = new Mock<IWordCounter>();
                 var mockFile = new Mock<IFileInfo>();
 
@@ -125,7 +148,11 @@ public class WordCountAggregatorTests
                     .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                     .Returns(new[] { mockFile.Object });
 
-                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object)
+                mockWordCounterSelector
+                    .Setup(s => s.SelectWordCounter(mockFile.Object.FullName))
+                    .Returns(mockWordCounter.Object);
+
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
                 {
                     ExcludedWords = new[] { "exclude" }
                 };
@@ -147,6 +174,7 @@ public class WordCountAggregatorTests
                 var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
 
                 var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounterSelector = new Mock<IWordCounterSelector>();
                 var mockWordCounter = new Mock<IWordCounter>();
                 var mockFile1 = new Mock<IFileInfo>();
                 var mockFile2 = new Mock<IFileInfo>();
@@ -162,7 +190,14 @@ public class WordCountAggregatorTests
                     .Setup(fs => fs.GetAllFiles(testDirectoryPath))
                     .Returns(new[] { mockFile1.Object, mockFile2.Object });
 
-                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object)
+                mockWordCounterSelector
+                    .Setup(s => s.SelectWordCounter(mockFile1.Object.FullName))
+                    .Returns(mockWordCounter.Object);
+                mockWordCounterSelector
+                    .Setup(s => s.SelectWordCounter(mockFile2.Object.FullName))
+                    .Returns(mockWordCounter.Object);
+
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
                 {
                     MaxResults = 2
                 };

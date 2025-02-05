@@ -17,8 +17,11 @@ class Program
         { 
             ExcludeFilter = config.ExcludeFilter 
         };
-        var wordCounter = new WordCounter();
-        var aggregator = new WordCountAggregator(fileSearcher, wordCounter)
+
+        var wordCounterSelector = new WordCounterSelector();
+        wordCounterSelector.RegisterWordCounter("**/*", new WordCounter());
+
+        var aggregator = new WordCountAggregator(fileSearcher, wordCounterSelector)
         {
             FileExtensions = config.ValidFileExtensions,
             MaxResults = config.MaxResults,
