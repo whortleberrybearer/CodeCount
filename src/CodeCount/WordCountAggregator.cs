@@ -13,6 +13,8 @@ public class WordCountAggregator
 
     public int? MaxResults { get; set; }
 
+    public IEnumerable<string>? ExcludedWords { get; set; }
+
     public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath)
     {
         var allFiles = _fileSearcher.GetAllFiles(directoryPath);
@@ -32,6 +34,11 @@ public class WordCountAggregator
 
             foreach (var wordCount in wordCounts)
             {
+                if (ExcludedWords is not null && ExcludedWords.Contains(wordCount.Key))
+                {
+                    continue;
+                }
+
                 if (wordCountDictionary.ContainsKey(wordCount.Key))
                 {
                     wordCountDictionary[wordCount.Key] += wordCount.Value;

@@ -106,6 +106,39 @@ public class WordCountAggregatorTests
             results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
         }
 
+        public class And_excluded_words_specified
+        {
+            [Fact]
+            public void Should_not_include_specified_words()
+            {
+                var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+
+                var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounter = new Mock<IWordCounter>();
+                var mockFile = new Mock<IFileInfo>();
+
+                mockFile
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 }, { "exclude", 1 } });
+
+                mockFileSearcher
+                    .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                    .Returns(new[] { mockFile.Object });
+
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounter.Object)
+                {
+                    ExcludedWords = new[] { "exclude" }
+                };
+
+                var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+
+                results.Length.ShouldBe(2);
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+                results.ShouldNotContain(r => r.Word == "exclude");
+            }
+        }
+
         public class And_max_results_specified
         {
             [Fact]

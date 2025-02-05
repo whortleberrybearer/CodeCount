@@ -21,7 +21,8 @@ class Program
         var aggregator = new WordCountAggregator(fileSearcher, wordCounter)
         {
             FileExtensions = config.ValidFileExtensions,
-            MaxResults = config.MaxResults
+            MaxResults = config.MaxResults,
+            ExcludedWords = config.ExcludeWords
         };
 
         var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);

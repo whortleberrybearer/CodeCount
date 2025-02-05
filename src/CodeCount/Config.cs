@@ -5,4 +5,5 @@ public record Config
     public int? MaxResults { get; init; }
     public string[]? ValidFileExtensions { get; init; }
     public string? ExcludeFilter { get; init; }
+    public string[]? ExcludeWords { get; init; }
 }
