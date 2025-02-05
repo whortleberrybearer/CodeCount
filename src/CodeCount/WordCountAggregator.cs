@@ -32,7 +32,7 @@ public class WordCountAggregator
 
             if (wordCounter is null)
             {
-                Console.WriteLine($"Skipping file (no counter registered): {file.FullName}");
+                Console.WriteLine($"Skipping file (no word counter registered): {file.FullName}");
                 continue;
             }
 
