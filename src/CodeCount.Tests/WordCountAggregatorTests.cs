@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 public class WordCountAggregatorTests
 {
     public class When_aggregating_word_counts
@@ -154,7 +156,7 @@ public class WordCountAggregatorTests
 
                 var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
                 {
-                    ExcludedWords = new[] { "exclude" }
+                    ExcludedWords = new[] { new Regex("exclude", RegexOptions.IgnoreCase) }
                 };
 
                 var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
@@ -163,6 +165,41 @@ public class WordCountAggregatorTests
                 results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
                 results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
                 results.ShouldNotContain(r => r.Word == "exclude");
+            }
+
+            [Fact]
+            public void Should_not_include_words_matching_regex_pattern()
+            {
+                var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
+
+                var mockFileSearcher = new Mock<IFileSearcher>();
+                var mockWordCounterSelector = new Mock<IWordCounterSelector>();
+                var mockWordCounter = new Mock<IWordCounter>();
+                var mockFile = new Mock<IFileInfo>();
+
+                mockFile
+                    .Setup(f => f.GetWordCounts(mockWordCounter.Object))
+                    .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 }, { "exclude1", 1 }, { "exclude2", 1 } });
+
+                mockFileSearcher
+                    .Setup(fs => fs.GetAllFiles(testDirectoryPath))
+                    .Returns(new[] { mockFile.Object });
+
+                mockWordCounterSelector
+                    .Setup(s => s.SelectWordCounter(mockFile.Object.FullName))
+                    .Returns(mockWordCounter.Object);
+
+                var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
+                {
+                    ExcludedWords = new[] { new Regex("exclude\\d", RegexOptions.IgnoreCase) }
+                };
+
+                var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
+
+                results.Length.ShouldBe(2);
+                results.ShouldContain(new WordCountResult() { Word = "hello", Count = 1 });
+                results.ShouldContain(new WordCountResult() { Word = "world", Count = 1 });
+                results.ShouldNotContain(r => r.Word.StartsWith("exclude"));
             }
         }
 

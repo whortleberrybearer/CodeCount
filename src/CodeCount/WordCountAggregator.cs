@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 public class WordCountAggregator
 {
     private readonly IFileSearcher _fileSearcher;
@@ -13,7 +15,7 @@ public class WordCountAggregator
 
     public int? MaxResults { get; set; }
 
-    public IEnumerable<string>? ExcludedWords { get; set; }
+    public IEnumerable<Regex>? ExcludedWords { get; set; }
 
     public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath)
     {
@@ -42,7 +44,7 @@ public class WordCountAggregator
 
             foreach (var wordCount in wordCounts)
             {
-                if (ExcludedWords is not null && ExcludedWords.Contains(wordCount.Key))
+                if (ExcludedWords is not null && ExcludedWords.Any(regex => regex.IsMatch(wordCount.Key)))
                 {
                     continue;
                 }

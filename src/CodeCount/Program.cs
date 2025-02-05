@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace CodeCount;
 
@@ -25,7 +26,7 @@ class Program
         {
             FileExtensions = config.ValidFileExtensions,
             MaxResults = config.MaxResults,
-            ExcludedWords = config.ExcludeWords
+            ExcludedWords = config.ExcludeWords?.Select(pattern => new Regex(pattern, RegexOptions.IgnoreCase))
         };
 
         var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);
