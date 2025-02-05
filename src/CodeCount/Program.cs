@@ -13,7 +13,10 @@ class Program
             return;
         }
 
-        var fileSearcher = new FileSearcher();
+        var fileSearcher = new FileSearcher() 
+        { 
+            Filter = config.Filter 
+        };
         var wordCounter = new WordCounter();
         var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
 

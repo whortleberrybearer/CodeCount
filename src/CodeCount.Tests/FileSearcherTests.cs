@@ -33,4 +33,57 @@ public class FileSearcherTests
             }
         }
     }
+
+    [Fact]
+    public void Should_apply_filter_when_searching_files()
+    {
+        var directoryPath = Path.GetTempPath();
+        var fileSearcher = new FileSearcher { Filter = "*.txt" };
+
+        var tempFile1 = Path.Combine(directoryPath, "test1.txt");
+        var tempFile2 = Path.Combine(directoryPath, "test2.doc");
+
+        try
+        {
+            File.WriteAllText(tempFile1, "test");
+            File.WriteAllText(tempFile2, "test");
+
+            var files = fileSearcher.GetAllFiles(directoryPath).ToList();
+
+            //files.Count.ShouldBe(1);
+            files[0].FullName.ShouldBe(tempFile1);
+        }
+        finally
+        {
+            File.Delete(tempFile1);
+            File.Delete(tempFile2);
+        }
+    }
+
+    [Fact]
+    public void Should_return_all_files_when_no_filter_is_set()
+    {
+        var directoryPath = Path.GetTempPath();
+        var fileSearcher = new FileSearcher();
+
+        var tempFile1 = Path.Combine(directoryPath, "test1.txt");
+        var tempFile2 = Path.Combine(directoryPath, "test2.doc");
+
+        try
+        {
+            File.WriteAllText(tempFile1, "test");
+            File.WriteAllText(tempFile2, "test");
+
+            var files = fileSearcher.GetAllFiles(directoryPath).ToList();
+
+            //files.Count.ShouldBe(2);
+            files.ShouldContain(f => f.FullName == tempFile1);
+            files.ShouldContain(f => f.FullName == tempFile2);
+        }
+        finally
+        {
+            File.Delete(tempFile1);
+            File.Delete(tempFile2);
+        }
+    }
 }
