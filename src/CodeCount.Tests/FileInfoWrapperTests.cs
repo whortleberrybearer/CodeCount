@@ -32,7 +32,7 @@ public class FileInfoWrapperTests
     public class When_getting_word_counts
     {
         [Fact]
-        public void Should_return_word_counts()
+        public void Should_return_word_counter_result()
         {
             var filePath = Path.GetTempFileName();
 
