@@ -4,5 +4,5 @@ public record Config
     public required string OutputFilePath { get; init; }
     public int? MaxResults { get; init; }
     public string[]? ValidFileExtensions { get; init; }
-    public string? Filter { get; init; }
+    public string? ExcludeFilter { get; init; }
 }

@@ -15,7 +15,7 @@ class Program
 
         var fileSearcher = new FileSearcher() 
         { 
-            Filter = config.Filter 
+            ExcludeFilter = config.ExcludeFilter 
         };
         var wordCounter = new WordCounter();
         var aggregator = new WordCountAggregator(fileSearcher, wordCounter);

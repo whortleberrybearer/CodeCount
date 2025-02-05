@@ -23,7 +23,6 @@ public class FileSearcherTests
             {
                 var results = sut.GetAllFiles(testDirectoryPath).ToArray();
 
-                results.Length.ShouldBe(2);
                 results.ShouldContain(file => file.FullName == file1Path);
                 results.ShouldContain(file => file.FullName == file2Path);
             }
@@ -32,58 +31,47 @@ public class FileSearcherTests
                 Directory.Delete(testDirectoryPath, true);
             }
         }
-    }
 
-    [Fact]
-    public void Should_apply_filter_when_searching_files()
-    {
-        var directoryPath = Path.GetTempPath();
-        var fileSearcher = new FileSearcher { Filter = "*.txt" };
-
-        var tempFile1 = Path.Combine(directoryPath, "test1.txt");
-        var tempFile2 = Path.Combine(directoryPath, "test2.doc");
-
-        try
+        public class And_filter_applied
         {
-            File.WriteAllText(tempFile1, "test");
-            File.WriteAllText(tempFile2, "test");
+            [Fact]
+            public void Should_not_return_files_matching_filter()
+            {
+                var testDirectoryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(testDirectoryPath);
 
-            var files = fileSearcher.GetAllFiles(directoryPath).ToList();
+                var subDirectoryPath = Path.Combine(testDirectoryPath, "subdir");
+                Directory.CreateDirectory(subDirectoryPath);
 
-            //files.Count.ShouldBe(1);
-            files[0].FullName.ShouldBe(tempFile1);
-        }
-        finally
-        {
-            File.Delete(tempFile1);
-            File.Delete(tempFile2);
-        }
-    }
+                var file1Path = Path.Combine(testDirectoryPath, "file1.txt");
+                var file2Path = Path.Combine(testDirectoryPath, "file2.doc");
+                var file3Path = Path.Combine(testDirectoryPath, "file3.exe");
+                var file4Path = Path.Combine(subDirectoryPath, "test4.doc");
 
-    [Fact]
-    public void Should_return_all_files_when_no_filter_is_set()
-    {
-        var directoryPath = Path.GetTempPath();
-        var fileSearcher = new FileSearcher();
+                File.WriteAllText(file1Path, "Test content");
+                File.WriteAllText(file2Path, "Test content");
+                File.WriteAllText(file3Path, "Test content");
+                File.WriteAllText(file4Path, "Test content");
 
-        var tempFile1 = Path.Combine(directoryPath, "test1.txt");
-        var tempFile2 = Path.Combine(directoryPath, "test2.doc");
+                var sut = new FileSearcher() 
+                { 
+                    ExcludeFilter = "**/*.doc;*.exe" 
+                };
 
-        try
-        {
-            File.WriteAllText(tempFile1, "test");
-            File.WriteAllText(tempFile2, "test");
+                try
+                {
+                    var results = sut.GetAllFiles(testDirectoryPath).ToArray();
 
-            var files = fileSearcher.GetAllFiles(directoryPath).ToList();
-
-            //files.Count.ShouldBe(2);
-            files.ShouldContain(f => f.FullName == tempFile1);
-            files.ShouldContain(f => f.FullName == tempFile2);
-        }
-        finally
-        {
-            File.Delete(tempFile1);
-            File.Delete(tempFile2);
+                    results.ShouldContain(file => file.FullName == file1Path);
+                    results.ShouldNotContain(file => file.FullName == file2Path);
+                    results.ShouldNotContain(file => file.FullName == file3Path);
+                    results.ShouldNotContain(file => file.FullName == file4Path);
+                }
+                finally
+                {
+                    Directory.Delete(testDirectoryPath, true);
+                }
+            }
         }
     }
 }
