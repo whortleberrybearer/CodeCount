@@ -1,12 +1,12 @@
 public class WordCountAggregator
 {
     private readonly IFileSearcher _fileSearcher;
-    private readonly IWordCounter _wordCounter;
+    private readonly IWordCounterSelector _wordCounterSelector;
 
-    public WordCountAggregator(IFileSearcher fileSearcher, IWordCounter wordCounter)
+    public WordCountAggregator(IFileSearcher fileSearcher, IWordCounterSelector wordCounterSelector)
     {
         _fileSearcher = fileSearcher ?? throw new ArgumentNullException(nameof(fileSearcher));
-        _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
+        _wordCounterSelector = wordCounterSelector ?? throw new ArgumentNullException(nameof(wordCounterSelector));
     }
 
     public string[]? FileExtensions { get; set; }
@@ -28,9 +28,17 @@ public class WordCountAggregator
                 continue;
             }
 
+            var wordCounter = _wordCounterSelector.SelectWordCounter(file.FullName);
+
+            if (wordCounter is null)
+            {
+                Console.WriteLine($"Skipping file (no word counter registered): {file.FullName}");
+                continue;
+            }
+
             Console.WriteLine($"Processing file: {file.FullName}");
 
-            var wordCounts = file.GetWordCounts(_wordCounter);
+            var wordCounts = file.GetWordCounts(wordCounter);
 
             foreach (var wordCount in wordCounts)
             {
