@@ -9,14 +9,18 @@ public class WordCountAggregator
         _wordCounter = wordCounter ?? throw new ArgumentNullException(nameof(wordCounter));
     }
 
-    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath, string[]? fileExtensions = null, int? maxResults = null)
+    public string[]? FileExtensions { get; set; }
+
+    public int? MaxResults { get; set; }
+
+    public IEnumerable<WordCountResult> AggregateWordCounts(string directoryPath)
     {
         var allFiles = _fileSearcher.GetAllFiles(directoryPath);
         var wordCountDictionary = new Dictionary<string, int>();
 
         foreach (var file in allFiles)
         {
-            if (fileExtensions is not null && !file.HasValidExtension(fileExtensions))
+            if (FileExtensions is not null && !file.HasValidExtension(FileExtensions))
             {
                 Console.WriteLine($"Skipping file (invalid extension): {file.FullName}");
                 continue;
@@ -41,12 +45,12 @@ public class WordCountAggregator
 
         var results = wordCountDictionary.Select(kvp => new WordCountResult { Word = kvp.Key, Count = kvp.Value });
 
-        if (maxResults.HasValue)
+        if (MaxResults.HasValue)
         {
             results = results
                 .OrderByDescending(result => result.Count)
                 .ThenBy(result => result.Word)
-                .Take(maxResults.Value);
+                .Take(MaxResults.Value);
         }
 
         return results.OrderBy(result => result.Word);
