@@ -18,9 +18,13 @@ class Program
             ExcludeFilter = config.ExcludeFilter 
         };
         var wordCounter = new WordCounter();
-        var aggregator = new WordCountAggregator(fileSearcher, wordCounter);
+        var aggregator = new WordCountAggregator(fileSearcher, wordCounter)
+        {
+            FileExtensions = config.ValidFileExtensions,
+            MaxResults = config.MaxResults
+        };
 
-        var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath, config.ValidFileExtensions, config.MaxResults);
+        var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);
 
         WriteOutputFile(wordCounts, config.OutputFilePath);
     }
