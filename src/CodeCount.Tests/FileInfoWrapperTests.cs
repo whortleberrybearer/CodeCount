@@ -39,9 +39,15 @@ public class FileInfoWrapperTests
             try
             {
                 var fileInfo = new FileInfo(filePath);
+                var text = "test";
+
+                using (var streamWriter = fileInfo.CreateText())
+                {
+                    streamWriter.Write(text);
+                }
 
                 var wordCounter = new Mock<IWordCounter>();
-                wordCounter.Setup(w => w.GetWordCounts(It.IsAny<Stream>())).Returns(new Dictionary<string, int> { { "test", 1 } });
+                wordCounter.Setup(w => w.GetWordCounts(text)).Returns(new Dictionary<string, int> { { "test", 1 } });
 
                 var wrapper = new FileInfoWrapper(fileInfo);
 
