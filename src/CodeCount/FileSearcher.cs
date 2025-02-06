@@ -8,16 +8,16 @@ public interface IFileSearcher
 
 public class FileSearcher : IFileSearcher
 {
-    public string? ExcludeFilter { get; set; }
+    public IEnumerable<string>? ExcludeFilter { get; set; }
 
     public IEnumerable<IFileInfo> GetAllFiles(string directoryPath)
     {
         var matcher = new Matcher();
         matcher.AddInclude("**/*");
 
-        if (!string.IsNullOrEmpty(ExcludeFilter))
+        if (ExcludeFilter is not null)
         {
-            matcher.AddExcludePatterns(ExcludeFilter.Split(';'));
+            matcher.AddExcludePatterns(ExcludeFilter);
         }
 
         var matchingFiles = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directoryPath))).Files;

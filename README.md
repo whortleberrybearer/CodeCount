@@ -14,8 +14,8 @@ Configuration is set within the `config.json` file.  The following properties ca
 
 - sourceDirectoryPath (**Required**) - The path to scan.
 - outputFilePath (**Required**) - The path and filename to write the output file to.
-- excludeFilter - A glob filter for exlcuding directories and files.
-- excludeWords - A list of words to exclude.
+- excludeFilter - A list of glob filters for exlcuding directories and files.
+- excludeWords - A list of words to exclude.  Supports regular expressions.
 - maxResults - Limits the number of results based on the count of each word.
 - validFileExtensions - A list of extensions that will be processed.
 
@@ -42,7 +42,7 @@ Words present in `excludeWords` will be removed from the results, and only the t
 {
     "sourceDirectoryPath": ".",
     "outputFilePath": "output.json",
-    "excludeFilter": "**/*.Tests;**/bin;**/obj;**/.vs",
+    "excludeFilter": [ "**/*.Tests*", "**/bin", "**/obj", "**/.vs" ],
     "validFileExtensions": [".cs", ".md"],
     "excludeWords": [ "system", "global", "new", "public", "var", "using" ],
     "maxResults": 10
