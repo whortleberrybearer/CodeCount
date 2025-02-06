@@ -18,14 +18,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Change directory to src
-        run: cd src
-
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore src
 
       - name: Build solution
-        run: dotnet build --no-restore
+        run: dotnet build src --no-restore
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test src --no-build --verbosity normal
