@@ -38,7 +38,7 @@ public class WordCounterSelector : IWordCounterSelector
     {
         foreach (var (matcher, wordCounter) in _wordCounters)
         {
-            if (matcher.Match(filePath).HasMatches)
+            if (matcher.Match("/", filePath).HasMatches)
             {
                 return wordCounter;
             }
