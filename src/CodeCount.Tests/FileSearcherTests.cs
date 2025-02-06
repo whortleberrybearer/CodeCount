@@ -55,7 +55,7 @@ public class FileSearcherTests
 
                 var sut = new FileSearcher() 
                 { 
-                    ExcludeFilter = "**/*.doc;*.exe" 
+                    ExcludeFilter = new[] { "**/*.doc", "*.exe" } 
                 };
 
                 try
