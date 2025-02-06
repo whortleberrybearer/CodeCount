@@ -7,7 +7,19 @@ public interface IWordCounter
 
 public class WordCounter : IWordCounter
 {
-    public IDictionary<string, int> GetWordCounts(string text)
+    public WordCounter() 
+        : this(new Regex(@"[^a-zA-Z]+"))
+    {
+    }
+
+    protected WordCounter(Regex splitExpression)
+    {
+        SplitExpression = splitExpression;
+    }
+
+    public Regex SplitExpression { get; set; }
+
+    public virtual IDictionary<string, int> GetWordCounts(string text)
     {
         if (text is null)
         {
@@ -19,9 +31,14 @@ public class WordCounter : IWordCounter
             return new Dictionary<string, int>();
         }
 
-        return Regex.Split(text, @"[^a-zA-Z]+")
+        return SplitText(text)
             .Where(word => word.Length > 1) // Ignore single-letter words
             .GroupBy(word => word.ToLower())
             .ToDictionary(group => group.Key, group => group.Count());
+    }
+
+    protected virtual IEnumerable<string> SplitText(string text)
+    {
+        return SplitExpression.Split(text);
     }
 }
