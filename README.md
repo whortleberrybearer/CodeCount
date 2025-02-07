@@ -48,3 +48,23 @@ Words present in `excludeWords` will be removed from the results, and only the t
     "maxResults": 10
 }
 ```
+
+## Supported Counters
+
+### WordCounter
+
+A simplistic counter that splits words on spaces and punctuation.
+
+#### Options
+
+- SplitExpression (default "[^a-zA-Z0-9]+") - The expression to split word with.
+
+### CSharpCounter
+
+A specialised counter for C# files.  Excludes numbers when splitting words and by default will excluded language keywords and split any camel or pascal cased named items.
+
+#### Options
+
+- SplitExpression (default "[^a-zA-Z0-9]+") - The expression to split word with.
+- ExcludeKeywords (default true) - If language keywords should be excluded from the count.
+- SplitNames (default true) - If pascal or camel case named items should be split.
