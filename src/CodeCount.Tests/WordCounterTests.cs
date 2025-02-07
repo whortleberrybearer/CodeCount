@@ -47,16 +47,17 @@ public class WordCounterTests
         }
 
         [Fact]
-        public void Punctuation_and_numbers_should_be_ignored()
+        public void Punctuation_should_be_ignored()
         {
             var wordCounter = new WordCounter();
             
             var results = wordCounter.GetWordCounts("Dave: Hello Steve1.\r\nSteve2: Hi! It's not Steve1.");
             
-            results.Count.ShouldBe(6);
+            results.Count.ShouldBe(7);
             results.ShouldContainKeyAndValue("dave", 1);
             results.ShouldContainKeyAndValue("hello", 1);
-            results.ShouldContainKeyAndValue("steve", 3);
+            results.ShouldContainKeyAndValue("steve1", 2);
+            results.ShouldContainKeyAndValue("steve2", 1);
             results.ShouldContainKeyAndValue("hi", 1);
             results.ShouldContainKeyAndValue("it", 1);
             results.ShouldContainKeyAndValue("not", 1);

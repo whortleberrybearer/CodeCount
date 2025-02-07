@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 public class CSharpWordCounter : WordCounter
 {
     public CSharpWordCounter() 
-        : base(new Regex(@"[^a-zA-Z_]+"))
+        : base(new Regex(@"[^a-zA-Z]+"))
     {
     }
 
@@ -13,8 +13,8 @@ public class CSharpWordCounter : WordCounter
 
     protected override IEnumerable<string> SplitText(string text)
     {
-        var words = base.SplitText(text);
-
+        // Remove the keywords from the text before splitting as it can cause issues with identifying words that were
+        // not keywords, e.g. value123 would be split to value, and then removed as it is a keyword.
         if (ExcludeKeywords)
         {
             // Taken from https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/
@@ -32,9 +32,15 @@ public class CSharpWordCounter : WordCounter
                 "notnull", "nuint", "on", "or", "orderby", "partial", "record", "remove", "required", "scoped", "select", 
                 "set", "unmanaged", "value", "var", "when", "where", "with", "yield"
             };
-            
-            words = words.Where(word => !keywords.Contains(word));
+
+            foreach (var keyword in keywords)
+            {
+                // This uses regex to ensure the whole word is matched, not partial matches
+                text = Regex.Replace(text, $@"\b{keyword}\b", string.Empty);
+            }
         }
+
+        var words = base.SplitText(text);
 
         if (SplitNames)
         {
