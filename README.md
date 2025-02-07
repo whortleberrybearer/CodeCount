@@ -65,6 +65,6 @@ A specialised counter for C# files.  Excludes numbers when splitting words and b
 
 #### Options
 
-- SplitExpression (default "[^a-zA-Z0-9]+") - The expression to split word with.
+- SplitExpression (default "[^a-zA-Z]+") - The expression to split word with.
 - ExcludeKeywords (default true) - If language keywords should be excluded from the count.
 - SplitNames (default true) - If pascal or camel case named items should be split.
