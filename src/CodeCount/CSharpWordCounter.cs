@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 public class CSharpWordCounter : WordCounter
 {
     public CSharpWordCounter() 
-        : base(new Regex(@"[^a-zA-Z_]+"))
+        : base()
     {
     }
 

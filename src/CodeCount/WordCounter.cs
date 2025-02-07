@@ -8,7 +8,7 @@ public interface IWordCounter
 public class WordCounter : IWordCounter
 {
     public WordCounter() 
-        : this(new Regex(@"[^a-zA-Z]+"))
+        : this(new Regex(@"[^a-zA-Z0-9]+"))
     {
     }
 

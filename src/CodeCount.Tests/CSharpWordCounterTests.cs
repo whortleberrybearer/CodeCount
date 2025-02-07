@@ -30,6 +30,18 @@ public class CSharpWordCounterTests
             wordCounts.ShouldContainKeyAndValue("class", 1);
         }
 
+        [Fact]
+        public void Numbers_should_be_excluded()
+        {
+            var counter = new CSharpWordCounter();
+
+            var wordCounts = counter.GetWordCounts("public class TestClass { private int value123; int value456; }");
+
+            wordCounts.ShouldContainKeyAndValue("value", 2);
+            wordCounts.ShouldNotContainKey("value123");
+            wordCounts.ShouldNotContainKey("value456");
+        }
+
         public class When_keywords_are_not_excluded
         {
             [Fact]
