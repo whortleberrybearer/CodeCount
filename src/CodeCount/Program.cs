@@ -20,8 +20,8 @@ class Program
         };
 
         var wordCounterSelector = new WordCounterSelector();
-        wordCounterSelector.RegisterWordCounter(new[] { "**/*" }, new WordCounter());
         wordCounterSelector.RegisterWordCounter(new[] { "**/*.cs" }, new CSharpWordCounter());
+        wordCounterSelector.RegisterWordCounter(new[] { "**/*" }, new WordCounter());
 
         var aggregator = new WordCountAggregator(fileSearcher, wordCounterSelector)
         {
