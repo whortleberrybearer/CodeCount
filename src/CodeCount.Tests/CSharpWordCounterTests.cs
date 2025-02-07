@@ -31,7 +31,7 @@ public class CSharpWordCounterTests
         }
 
         [Fact]
-        public void Numbers_should_be_excluded()
+        public void Numbers_should_be_ignored()
         {
             var counter = new CSharpWordCounter();
 
