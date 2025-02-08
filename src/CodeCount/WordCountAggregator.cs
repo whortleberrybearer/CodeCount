@@ -11,8 +11,6 @@ public class WordCountAggregator
         _wordCounterSelector = wordCounterSelector ?? throw new ArgumentNullException(nameof(wordCounterSelector));
     }
 
-    public string[]? FileExtensions { get; set; }
-
     public int? MaxResults { get; set; }
 
     public IEnumerable<Regex>? ExcludedWords { get; set; }
@@ -24,12 +22,6 @@ public class WordCountAggregator
 
         foreach (var file in allFiles)
         {
-            if (FileExtensions is not null && !file.HasValidExtension(FileExtensions))
-            {
-                Console.WriteLine($"Skipping file (invalid extension): {file.FullName}");
-                continue;
-            }
-
             var wordCounter = _wordCounterSelector.SelectWordCounter(file.FullName);
 
             if (wordCounter is null)

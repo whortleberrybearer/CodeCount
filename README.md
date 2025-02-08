@@ -17,7 +17,6 @@ Configuration is set within the `config.json` file.  The following properties ca
 - excludeFilter - A list of glob filters for exlcuding directories and files.
 - excludeWords - A list of words to exclude.  Supports regular expressions.
 - maxResults - Limits the number of results based on the count of each word.
-- validFileExtensions - A list of extensions that will be processed.
 
 ## Examples
 
@@ -41,7 +40,7 @@ Scan the current directory and write to `output.json` in the current directory. 
 
 ### Full
 
-Scan the current directory and write to `output.json` in the current directory.  Will ignore anything in the folders specified in `excludeFilter`, and only process files of the types in `validFileExtensions`.  .cs files will be processed by the CSharp word counter and .md files by the standard word counter.  All other files will be ignored.
+Scan the current directory and write to `output.json` in the current directory.  Will ignore anything in the folders specified in `excludeFilter`.  .cs files will be processed by the CSharp word counter and .md files by the standard word counter.  All other files will be ignored.
 
 Words present in `excludeWords` will be removed from the results, and only the top `maxResults` will be returned based on the number of instances of the word.
 
@@ -64,7 +63,6 @@ Words present in `excludeWords` will be removed from the results, and only the t
         }
     ],
     "excludeFilter": [ "**/*.Tests*", "**/bin", "**/obj", "**/.vs" ],
-    "validFileExtensions": [".cs", ".md"],
     "excludeWords": [ "system", "global", "new", "public", "var", "using" ],
     "maxResults": 10
 }

@@ -83,10 +83,9 @@ public class WordCountAggregatorTests
         }
 
         [Fact]
-        public void Should_ignore_files_with_different_extensions()
+        public void Should_ignore_files_when_no_counter_registered()
         {
             var testDirectoryPath = Path.Combine("test", Guid.NewGuid().ToString());
-            var fileExtensions = new[] { ".txt" };
 
             var mockFileSearcher = new Mock<IFileSearcher>();
             var mockWordCounterSelector = new Mock<IWordCounterSelector>();
@@ -98,14 +97,14 @@ public class WordCountAggregatorTests
                 .Setup(f => f.GetWordCounts(mockWordCounter.Object))
                 .Returns(new Dictionary<string, int> { { "hello", 1 }, { "world", 1 } });
             mockFile1
-                .Setup(f => f.HasValidExtension(fileExtensions))
-                .Returns(true);
+                .Setup(f => f.FullName)
+                .Returns("file1.txt");
             mockFile2
                 .Setup(f => f.GetWordCounts(mockWordCounter.Object))
                 .Returns(new Dictionary<string, int> { { "hello", 1 }, { "universe", 1 } });
             mockFile2
-                .Setup(f => f.HasValidExtension(fileExtensions))
-                .Returns(false);
+                .Setup(f => f.FullName)
+                .Returns("file2.txt");
 
             mockFileSearcher
                 .Setup(fs => fs.GetAllFiles(testDirectoryPath))
@@ -116,12 +115,9 @@ public class WordCountAggregatorTests
                 .Returns(mockWordCounter.Object);
             mockWordCounterSelector
                 .Setup(s => s.SelectWordCounter(mockFile2.Object.FullName))
-                .Returns(mockWordCounter.Object);
+                .Returns((WordCounter?)null);
 
-            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object)
-            {
-                FileExtensions = fileExtensions
-            };
+            var aggregator = new WordCountAggregator(mockFileSearcher.Object, mockWordCounterSelector.Object);
 
             var results = aggregator.AggregateWordCounts(testDirectoryPath).ToArray();
 
