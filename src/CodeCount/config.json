@@ -3,17 +3,12 @@
     "outputFilePath": "output.json",
     "wordCounters": [
         {
-            "type": "CodeCount.WordCounter",
-            "filters": ["**/*"],
-            "properties": {}
+            "type": "CSharpWordCounter",
+            "filters": [ "**/*.cs" ]
         },
         {
-            "type": "CodeCount.CSharpWordCounter",
-            "filters": ["**/*.cs"],
-            "properties": {
-                "ExcludeKeywords": true,
-                "SplitNames": true
-            }
+            "type": "WordCounter",
+            "filters": [ "**/*" ]
         }
     ]
 }
