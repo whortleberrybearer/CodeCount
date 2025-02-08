@@ -23,18 +23,25 @@ Configuration is set within the `config.json` file.  The following properties ca
 
 ### Basic
 
-Scan the current directory and write to `output.json` in the current directory.
+Scan the current directory and write to `output.json` in the current directory.  All files will be processed using the standard word counter.
 
 ```json
 {
     "sourceDirectoryPath": ".",
-    "outputFilePath": "output.json"
+    "outputFilePath": "output.json",
+    "wordCounters": [
+        {
+            "type": "WordCounter",
+            "filters": [ "**/*" ]
+        }
+    ]
+
 }
 ```
 
 ### Full
 
-Scan the current directory and write to `output.json` in the current directory.  Will ignore anything in the folders specified in `excludeFilter`, and only process files of the types in `validFileExtensions`.
+Scan the current directory and write to `output.json` in the current directory.  Will ignore anything in the folders specified in `excludeFilter`, and only process files of the types in `validFileExtensions`.  .cs files will be processed by the CSharp word counter and .md files by the standard word counter.  All other files will be ignored.
 
 Words present in `excludeWords` will be removed from the results, and only the top `maxResults` will be returned based on the number of instances of the word.
 
@@ -42,6 +49,20 @@ Words present in `excludeWords` will be removed from the results, and only the t
 {
     "sourceDirectoryPath": ".",
     "outputFilePath": "output.json",
+    "wordCounters": [
+        {
+            "type": "CSharpWordCounter",
+            "filters": [ "**/*.cs" ],
+            "properties": {
+                "excludeKeywords": true,
+                "splitNames": true
+            }
+        },
+        {
+            "type": "WordCounter",
+            "filters": [ "**/*.md" ]
+        }
+    ],
     "excludeFilter": [ "**/*.Tests*", "**/bin", "**/obj", "**/.vs" ],
     "validFileExtensions": [".cs", ".md"],
     "excludeWords": [ "system", "global", "new", "public", "var", "using" ],

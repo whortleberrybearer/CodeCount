@@ -1,4 +1,14 @@
 {
     "sourceDirectoryPath": ".",
-    "outputFilePath": "output.json"
+    "outputFilePath": "output.json",
+    "wordCounters": [
+        {
+            "type": "CSharpWordCounter",
+            "filters": [ "**/*.cs" ]
+        },
+        {
+            "type": "WordCounter",
+            "filters": [ "**/*" ]
+        }
+    ]
 }

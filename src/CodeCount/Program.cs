@@ -14,14 +14,12 @@ class Program
             return;
         }
 
-        var fileSearcher = new FileSearcher() 
-        { 
-            ExcludeFilter = config.ExcludeFilter 
+        var fileSearcher = new FileSearcher()
+        {
+            ExcludeFilter = config.ExcludeFilter
         };
 
-        var wordCounterSelector = new WordCounterSelector();
-        wordCounterSelector.RegisterWordCounter(new[] { "**/*.cs" }, new CSharpWordCounter());
-        wordCounterSelector.RegisterWordCounter(new[] { "**/*" }, new WordCounter());
+        var wordCounterSelector = CreateWordCounterSelector(config);
 
         var aggregator = new WordCountAggregator(fileSearcher, wordCounterSelector)
         {
@@ -33,6 +31,23 @@ class Program
         var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);
 
         WriteOutputFile(wordCounts, config.OutputFilePath);
+    }
+
+    private static WordCounterSelector CreateWordCounterSelector(Config config)
+    {
+        var wordCounterSelector = new WordCounterSelector();
+
+        if (config.WordCounters is not null)
+        {
+            var factory = new WordCounterFactory();
+
+            foreach (var wordCounterConfig in config.WordCounters)
+            {
+                wordCounterSelector.RegisterWordCounter(wordCounterConfig.Filters, factory.CreateWordCounter(wordCounterConfig));
+            }
+        }
+
+        return wordCounterSelector;
     }
 
     private static Config? ReadAndValidateConfig(string configFilePath)
