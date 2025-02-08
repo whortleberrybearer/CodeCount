@@ -23,7 +23,6 @@ class Program
 
         var aggregator = new WordCountAggregator(fileSearcher, wordCounterSelector)
         {
-            FileExtensions = config.ValidFileExtensions,
             MaxResults = config.MaxResults,
             ExcludedWords = config.ExcludeWords?.Select(pattern => new Regex(pattern, RegexOptions.IgnoreCase))
         };

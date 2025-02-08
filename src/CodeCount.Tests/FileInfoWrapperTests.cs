@@ -1,34 +1,5 @@
 public class FileInfoWrapperTests
 {
-    public class When_checking_an_extension
-    {
-        [Fact]
-        public void Should_return_true_when_extension_is_valid()
-        {
-            var fileInfo = new FileInfo("test.txt");
-            var validExtensions = new List<string> { ".txt", ".doc" };
-
-            var wrapper = new FileInfoWrapper(fileInfo);
-
-            var result = wrapper.HasValidExtension(validExtensions);
-
-            result.ShouldBeTrue();
-        }
-        
-        [Fact]
-        public void Should_return_true_when_extension_is_not_valid()
-        {
-            var fileInfo = new FileInfo("test.exe");
-            var validExtensions = new List<string> { ".txt", ".doc" };
-
-            var wrapper = new FileInfoWrapper(fileInfo);
-
-            var result = wrapper.HasValidExtension(validExtensions);
-
-            result.ShouldBeFalse();
-        }
-    }
-
     public class When_getting_word_counts
     {
         [Fact]
