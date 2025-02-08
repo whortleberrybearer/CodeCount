@@ -6,7 +6,7 @@ public record Config
     public string[]? ValidFileExtensions { get; init; }
     public string[]? ExcludeFilter { get; init; }
     public string[]? ExcludeWords { get; init; }
-    public List<WordCounterConfig>? WordCounters { get; init; }
+    public WordCounterConfig[]? WordCounters { get; init; }
 }
 
 public record WordCounterConfig

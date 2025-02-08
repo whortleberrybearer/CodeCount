@@ -22,12 +22,7 @@ public class WordCounterFactoryTests
             var config = new WordCounterConfig
             {
                 Type = "WordCounter",
-                Filters = new[] { "**/*" },
-                Properties = new Dictionary<string, object>
-                {
-                    { "ExcludeKeywords", true },
-                    { "SplitNames", true }
-                }
+                Filters = new[] { "**/*" }
             };
             var factory = new WordCounterFactory();
 
