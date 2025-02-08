@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using System.Reflection;
 
 namespace CodeCount;
 
@@ -15,13 +14,12 @@ class Program
             return;
         }
 
-        var fileSearcher = new FileSearcher() 
-        { 
-            ExcludeFilter = config.ExcludeFilter 
+        var fileSearcher = new FileSearcher()
+        {
+            ExcludeFilter = config.ExcludeFilter
         };
 
-        var wordCounterSelector = new WordCounterSelector();
-        RegisterWordCounters(wordCounterSelector, config.WordCounters);
+        var wordCounterSelector = CreateWordCounterSelector(config);
 
         var aggregator = new WordCountAggregator(fileSearcher, wordCounterSelector)
         {
@@ -33,6 +31,23 @@ class Program
         var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);
 
         WriteOutputFile(wordCounts, config.OutputFilePath);
+    }
+
+    private static WordCounterSelector CreateWordCounterSelector(Config config)
+    {
+        var wordCounterSelector = new WordCounterSelector();
+
+        if (config.WordCounters is not null)
+        {
+            var factory = new WordCounterFactory();
+
+            foreach (var wordCounterConfig in config.WordCounters)
+            {
+                wordCounterSelector.RegisterWordCounter(wordCounterConfig.Filters, factory.CreateWordCounter(wordCounterConfig));
+            }
+        }
+
+        return wordCounterSelector;
     }
 
     private static Config? ReadAndValidateConfig(string configFilePath)
@@ -56,32 +71,5 @@ class Program
         File.WriteAllText(outputFilePath, json);
 
         Console.WriteLine($"Word counts have been written to {outputFilePath}");
-    }
-
-    private static void RegisterWordCounters(IWordCounterSelector selector, List<WordCounterConfig>? wordCounterConfigs)
-    {
-        if (wordCounterConfigs == null) return;
-
-        foreach (var wordCounterConfig in wordCounterConfigs)
-        {
-            var type = Type.GetType(wordCounterConfig.Type);
-            if (type == null) throw new InvalidOperationException($"Type {wordCounterConfig.Type} not found.");
-
-            var wordCounter = (IWordCounter)Activator.CreateInstance(type)!;
-
-            if (wordCounterConfig.Properties != null)
-            {
-                foreach (var property in wordCounterConfig.Properties)
-                {
-                    var propInfo = type.GetProperty(property.Key);
-                    if (propInfo != null && propInfo.CanWrite)
-                    {
-                        propInfo.SetValue(wordCounter, Convert.ChangeType(property.Value, propInfo.PropertyType));
-                    }
-                }
-            }
-
-            selector.RegisterWordCounter(wordCounterConfig.Filters, wordCounter);
-        }
     }
 }
