@@ -1,3 +1,4 @@
 [*.cs]
 dotnet_diagnostic.S101.severity = none
 dotnet_diagnostic.Moq1400.severity = none
+dotnet_diagnostic.RCS1102.severity = none
