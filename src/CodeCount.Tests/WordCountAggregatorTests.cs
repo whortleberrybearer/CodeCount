@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 using System.Text.RegularExpressions;
 
 public class WordCountAggregatorTests

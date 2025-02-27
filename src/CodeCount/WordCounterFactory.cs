@@ -1,8 +1,10 @@
-public class WordCounterFactory
+namespace CodeCount;
+
+public static class WordCounterFactory
 {
-    public IWordCounter CreateWordCounter(WordCounterConfig config)
+    public static IWordCounter CreateWordCounter(WordCounterConfig config)
     {
-        var type = Type.GetType(config.Type);
+        var type = Type.GetType($"CodeCount.{config.Type}");
 
         if (type is null) 
         {

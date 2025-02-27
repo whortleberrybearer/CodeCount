@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 public class FileInfoWrapperTests
 {
     public class When_getting_word_counts

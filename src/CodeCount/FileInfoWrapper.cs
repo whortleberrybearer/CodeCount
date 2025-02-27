@@ -1,3 +1,5 @@
+namespace CodeCount;
+
 // This wrapper class is required to allow mocking of the FileInfo class in unit tests.
 public class FileInfoWrapper : IFileInfo
 {

@@ -1,3 +1,5 @@
+namespace CodeCount;
+
 public record Config
 {
     public required string SourceDirectoryPath { get; init; }

@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 public class WordCounterFactoryTests
 {
     public class When_creating_a_word_counter
@@ -11,9 +13,7 @@ public class WordCounterFactoryTests
                 Filters = new[] { "**/*" }
             };
 
-            var factory = new WordCounterFactory();
-
-            Should.Throw<InvalidOperationException>(() => factory.CreateWordCounter(config));
+            Should.Throw<InvalidOperationException>(() => WordCounterFactory.CreateWordCounter(config));
         }
 
         [Fact]
@@ -24,9 +24,8 @@ public class WordCounterFactoryTests
                 Type = "WordCounter",
                 Filters = new[] { "**/*" }
             };
-            var factory = new WordCounterFactory();
 
-            var wordCounter = factory.CreateWordCounter(config);
+            var wordCounter = WordCounterFactory.CreateWordCounter(config);
 
             wordCounter.ShouldNotBeNull();
             wordCounter.ShouldBeOfType<WordCounter>();
@@ -50,9 +49,7 @@ public class WordCounterFactoryTests
                 }
             };
 
-            var factory = new WordCounterFactory();
-
-            var wordCounter = factory.CreateWordCounter(config);
+            var wordCounter = WordCounterFactory.CreateWordCounter(config);
 
             wordCounter.ShouldNotBeNull();
             wordCounter.ShouldBeOfType<CSharpWordCounter>();
