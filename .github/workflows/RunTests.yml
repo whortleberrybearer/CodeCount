@@ -38,15 +38,15 @@ jobs:
         with:
           files: |
             test-results/**/*.trx
+          check_run: false
 
       - name: Publish test report
         uses: dorny/test-reporter@v1.9.1
         if: always()
         with:
-          name: Tests
+          name: Test Results
           path: test-results/**/*.trx
           reporter: dotnet-trx
-          use-actions-summary: true
 
       - name: Generate code coverage report
         uses: irongut/CodeCoverageSummary@v1.3.0
