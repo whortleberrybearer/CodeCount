@@ -34,10 +34,19 @@ jobs:
 
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: always()        
         with:
           files: |
             test-results/**/*.trx
+          check_run: false
+
+      - name: Publish test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Tests
+          path: test-results/**/*.trx
+          reporter: dotnet-trx
 
       - name: Generate code coverage report
         uses: irongut/CodeCoverageSummary@v1.3.0
