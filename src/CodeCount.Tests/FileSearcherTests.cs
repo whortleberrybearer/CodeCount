@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 public class FileSearcherTests
 {
     public class When_getting_files

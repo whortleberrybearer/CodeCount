@@ -1,3 +1,5 @@
+namespace CodeCount;
+
 using Microsoft.Extensions.FileSystemGlobbing;
 
 public interface IWordCounterSelector

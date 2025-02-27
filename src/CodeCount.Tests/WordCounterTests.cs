@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 public class WordCounterTests
 {
     public class When_counting_words

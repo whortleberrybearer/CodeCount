@@ -1,3 +1,5 @@
+namespace CodeCount;
+
 using System.Text.RegularExpressions;
 
 public interface IWordCounter

@@ -1,3 +1,5 @@
+namespace CodeCount.Tests;
+
 public class WordCounterSelectorTests
 {
     public class When_selecting_a_word_counter

@@ -1,9 +1,9 @@
+namespace CodeCount;
+
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
-namespace CodeCount;
-
-class Program
+static class Program
 {
     static void Main(string[] args)
     {
@@ -38,11 +38,11 @@ class Program
 
         if (config.WordCounters is not null)
         {
-            var factory = new WordCounterFactory();
-
             foreach (var wordCounterConfig in config.WordCounters)
             {
-                wordCounterSelector.RegisterWordCounter(wordCounterConfig.Filters, factory.CreateWordCounter(wordCounterConfig));
+                wordCounterSelector.RegisterWordCounter(
+                    wordCounterConfig.Filters, 
+                    WordCounterFactory.CreateWordCounter(wordCounterConfig));
             }
         }
 

@@ -1,3 +1,5 @@
+namespace CodeCount;
+
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Microsoft.Extensions.FileSystemGlobbing;
 
