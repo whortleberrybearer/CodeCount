@@ -61,9 +61,9 @@ class Program
     private static Config? ReadAndValidateConfig(string configFilePath)
     {
         var configJson = File.ReadAllText(configFilePath);
-        var config = JsonConvert.DeserializeObject<Config>(configJson);
-
-        return config;
+        
+        // Currently no validation is required.
+        return JsonConvert.DeserializeObject<Config>(configJson);
     }
 
     private static void WriteOutputFile(IEnumerable<WordCountResult> wordCounts, string outputFilePath)
