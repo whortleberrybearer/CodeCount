@@ -12,8 +12,8 @@ class Program
     }
 
     public void Run(
-        [Option("source-directory-path", ['s'], Description = "The directory scan")] string sourceDirectoryPath,
-        [Option("output-file-path", ['o'], Description = "The file to write the output to")] string outputFilePath,
+        [Option("source-directory-path", ['s'], Description = "The directory scan")] string? sourceDirectoryPath,
+        [Option("output-file-path", ['o'], Description = "The file to write the output to")] string? outputFilePath,
         [Option("config-file-path", ['c'], Description = "The path to the config file")] string? configFilePath)
     {
         var config = ReadAndValidateConfig(configFilePath ?? "config.json");
@@ -36,9 +36,9 @@ class Program
             ExcludedWords = config.ExcludeWords?.Select(pattern => new Regex(pattern, RegexOptions.IgnoreCase))
         };
 
-        var wordCounts = aggregator.AggregateWordCounts(sourceDirectoryPath);
+        var wordCounts = aggregator.AggregateWordCounts(sourceDirectoryPath ?? ".");
 
-        WriteOutputFile(wordCounts, outputFilePath);
+        WriteOutputFile(wordCounts, outputFilePath ?? "output.json");
     }
 
     private static WordCounterSelector CreateWordCounterSelector(Config config)
