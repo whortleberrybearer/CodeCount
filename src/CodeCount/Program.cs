@@ -13,7 +13,7 @@ class Program
 
     public void Run(
         [Option("source-directory-path", ['s'], Description = "The directory scan")] string sourceDirectoryPath,
-        [Option("output-file-path", ['o'], Description = "The path to write the output")] string outputFilePath,
+        [Option("output-file-path", ['o'], Description = "The file to write the output to")] string outputFilePath,
         [Option("config-file-path", ['c'], Description = "The path to the config file")] string? configFilePath)
     {
         var config = ReadAndValidateConfig(configFilePath ?? "config.json");
