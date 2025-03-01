@@ -1,6 +1,4 @@
 {
-    "sourceDirectoryPath": ".",
-    "outputFilePath": "output.json",
     "wordCounters": [
         {
             "type": "CSharpWordCounter",

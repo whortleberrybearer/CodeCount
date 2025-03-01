@@ -12,6 +12,8 @@ class Program
     }
 
     public void Run(
+        [Argument(Description = "The directory scan")] string sourceDirectoryPath,
+        [Argument(Description = "The path to write the output")] string outputFilePath,
         [Argument(Description = "The path to the config file")] string? configFilePath)
     {
         var config = ReadAndValidateConfig(configFilePath ?? "config.json");
@@ -34,9 +36,9 @@ class Program
             ExcludedWords = config.ExcludeWords?.Select(pattern => new Regex(pattern, RegexOptions.IgnoreCase))
         };
 
-        var wordCounts = aggregator.AggregateWordCounts(config.SourceDirectoryPath);
+        var wordCounts = aggregator.AggregateWordCounts(sourceDirectoryPath);
 
-        WriteOutputFile(wordCounts, config.OutputFilePath);
+        WriteOutputFile(wordCounts, outputFilePath);
     }
 
     private static WordCounterSelector CreateWordCounterSelector(Config config)
@@ -60,13 +62,6 @@ class Program
     {
         var configJson = File.ReadAllText(configFilePath);
         var config = JsonConvert.DeserializeObject<Config>(configJson);
-
-        if (string.IsNullOrEmpty(config?.SourceDirectoryPath) || string.IsNullOrEmpty(config?.OutputFilePath))
-        {
-            Console.WriteLine("Source directory path and output file path must be specified in the config file.");
-
-            return null;
-        }
 
         return config;
     }
