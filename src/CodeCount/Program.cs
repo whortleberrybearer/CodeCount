@@ -38,7 +38,7 @@ class Program
 
         var wordCounts = aggregator.AggregateWordCounts(sourceDirectoryPath ?? ".");
 
-        WriteOutputFile(wordCounts, outputFilePath ?? "output.json");
+        WriteOutputFile(wordCounts, outputFilePath ?? "CodeCount.json");
     }
 
     private static WordCounterSelector CreateWordCounterSelector(Config config)

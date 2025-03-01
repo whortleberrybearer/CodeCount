@@ -8,46 +8,70 @@ While watching an conference session, the speaker (unfortunately I can't remembe
 
 Atleast, thats what I think the gist was, it was a long time ago.
 
+## Running
+
+The program will run with out additional configuration, however, the following options can be set.
+
+| Option                      | Description                                                         |
+|-----------------------------|---------------------------------------------------------------------|
+| --source-directory-path, -s | The directory scan.  Current directory if not specified.            |
+| --output-file-path, -o      | The file to write the output to.  CodeCount.json if not specified.  |
+| --config-file-path, -c      | The path to the config file.  Uses default config if not specified. |    
+
+### Examples
+
+#### Basic
+
+Scan the current directory and write output to `CodeCount.json` in the current directory.  All files will be processed using the default configuration.
+
+```cmd
+CodeCount.exe
+```
+
+#### Full
+
+Scan the `/Test` directory and write output to `/Result/Output.json`.  All files will using the configuration defined in `Test.config`.
+
+```cmd
+CodeCount.exe -s "/Test" -o "/Result/Output.json" -c "Test.config"
+```
+
 ## Configuration
 
-Configuration is set within the `config.json` file.  The following properties can be set:
+The following properties can be set within the config file:
 
-- sourceDirectoryPath (**Required**) - The path to scan.
-- outputFilePath (**Required**) - The path and filename to write the output file to.
 - excludeFilter - A list of glob filters for exlcuding directories and files.
 - excludeWords - A list of words to exclude.  Supports regular expressions.
 - maxResults - Limits the number of results based on the count of each word.
+- wordCounters - The word counters to process files with.
 
-## Examples
+### Default Configuration
 
-### Basic
-
-Scan the current directory and write to `output.json` in the current directory.  All files will be processed using the standard word counter.
+The default configuration will process all *.cs files with the CSharpWordCounter and everything else with the standard WordCounter.
 
 ```json
 {
-    "sourceDirectoryPath": ".",
-    "outputFilePath": "output.json",
     "wordCounters": [
+        {
+            "type": "CSharpWordCounter",
+            "filters": [ "**/*.cs" ]
+        },
         {
             "type": "WordCounter",
             "filters": [ "**/*" ]
         }
     ]
-
 }
 ```
 
-### Full
+### Example
 
-Scan the current directory and write to `output.json` in the current directory.  Will ignore anything in the folders specified in `excludeFilter`.  .cs files will be processed by the CSharp word counter and .md files by the standard word counter.  All other files will be ignored.
+Will ignore anything in the folders specified in `excludeFilter`.  .cs files will be processed by the CSharp word counter and .md files by the standard word counter.  All other files will be ignored.
 
 Words present in `excludeWords` will be removed from the results, and only the top `maxResults` will be returned based on the number of instances of the word.
 
 ```json
 {
-    "sourceDirectoryPath": ".",
-    "outputFilePath": "output.json",
     "wordCounters": [
         {
             "type": "CSharpWordCounter",
