@@ -8,21 +8,21 @@ While watching an conference session, the speaker (unfortunately I can't remembe
 
 Atleast, thats what I think the gist was, it was a long time ago.
 
-## Running
+## How to Run
 
-The program will run with out additional configuration, however, the following options can be set.
+The program will run with out additional configuration, however, the following options can be set:
 
 | Option                      | Description                                                         |
 |-----------------------------|---------------------------------------------------------------------|
 | --source-directory-path, -s | The directory scan.  Current directory if not specified.            |
 | --output-file-path, -o      | The file to write the output to.  CodeCount.json if not specified.  |
-| --config-file-path, -c      | The path to the config file.  Uses default config if not specified. |    
+| --config-file-path, -c      | The path to the config file.  Uses [default configuration](#default-configuration) if not specified. |    
 
 ### Examples
 
 #### Basic
 
-Scan the current directory and write output to `CodeCount.json` in the current directory.  All files will be processed using the default configuration.
+Scan the current directory and write output to `CodeCount.json` in the current directory.  All files will be processed using the [default configuration](#default-configuration).
 
 ```cmd
 CodeCount.exe
@@ -47,7 +47,7 @@ The following properties can be set within the config file:
 
 ### Default Configuration
 
-The default configuration will process all *.cs files with the CSharpWordCounter and everything else with the standard WordCounter.
+The default configuration will process all *.cs files with the [CSharpWordCounter](#csharpcounter) and everything else with the standard [WordCounter](#wordcounter).
 
 ```json
 {
