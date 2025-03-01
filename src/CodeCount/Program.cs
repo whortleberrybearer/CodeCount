@@ -1,13 +1,20 @@
 namespace CodeCount;
 
+using Cocona;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
-static class Program
+class Program
 {
     static void Main(string[] args)
     {
-        var config = ReadAndValidateConfig("config.json");
+        CoconaApp.Run<Program>(args);
+    }
+
+    public void Run(
+        [Argument(Description = "The path to the config file")] string? configFilePath)
+    {
+        var config = ReadAndValidateConfig(configFilePath ?? "config.json");
 
         if (config == null)
         {
