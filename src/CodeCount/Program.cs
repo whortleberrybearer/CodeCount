@@ -12,9 +12,9 @@ class Program
     }
 
     public void Run(
-        [Argument(Description = "The directory scan")] string sourceDirectoryPath,
-        [Argument(Description = "The path to write the output")] string outputFilePath,
-        [Argument(Description = "The path to the config file")] string? configFilePath)
+        [Option("source-directory-path", ['s'], Description = "The directory scan")] string sourceDirectoryPath,
+        [Option("output-file-path", ['o'], Description = "The path to write the output")] string outputFilePath,
+        [Option("config-file-path", ['c'], Description = "The path to the config file")] string? configFilePath)
     {
         var config = ReadAndValidateConfig(configFilePath ?? "config.json");
 
