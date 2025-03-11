@@ -10,42 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v1
+    - name: Restore and Build
+      uses: ./.github/actions/restore-build
       with:
         dotnet-version: '8.0.x'
+        configuration: 'Release'
 
-    - name: Restore dependencies
-      run: dotnet restore src
-
-    - name: Build solution
-      run: dotnet build src --configuration Release --no-restore
-
-    - name: Publish project
-      run: dotnet publish src/CodeCount/CodeCount.csproj --configuration Release --output ./publish
-
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Tests
+      uses: ./.github/actions/run-tests
       with:
-        tag_name: v1.0.0
-        release_name: Release v1.0.0
-        body: |
-          Release notes for version 1.0.0
-        draft: true
-        prerelease: false
+        configuration: 'Release'
 
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish Release
+      uses: ./.github/actions/publish-release
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./publish/*
-        asset_name: CodeCount.zip
-        asset_content_type: application/zip
+        configuration: 'Release'
+        tag_name: 'v1.0.0'
+        release_name: 'Release v1.0.0'
+        release_body: 'Release notes for version 1.0.0'
