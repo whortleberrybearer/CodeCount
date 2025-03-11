@@ -1,0 +1,51 @@
+name: Release on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create_release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore src
+
+    - name: Build solution
+      run: dotnet build src --configuration Release --no-restore
+
+    - name: Publish project
+      run: dotnet publish src/CodeCount/CodeCount.csproj --configuration Release --output ./publish
+
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v1.0.0
+        release_name: Release v1.0.0
+        body: |
+          Release notes for version 1.0.0
+        draft: true
+        prerelease: false
+
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./publish/*
+        asset_name: CodeCount.zip
+        asset_content_type: application/zip
