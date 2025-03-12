@@ -14,6 +14,7 @@ runs:
   steps:
     - name: Publish Project
       run: dotnet publish src/CodeCount/CodeCount.csproj --configuration ${{ inputs.configuration }} --output ./publish
+      shell: bash
 
     - name: Draft Release
       id: draft_release
