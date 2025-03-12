@@ -1,0 +1,30 @@
+name: Run Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  checks: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  run-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Restore and Build
+      uses: ./.github/actions/restore-build
+      with:
+        dotnet-version: '8.0.x'
+        configuration: 'Debug'
+
+    - name: Run Tests
+      uses: ./.github/actions/run-tests
+      with:
+        configuration: 'Debug'

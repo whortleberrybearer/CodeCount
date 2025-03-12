@@ -1,0 +1,29 @@
+name: 'Restore and Build'
+description: 'Composite action to restore and build the solution'
+inputs:
+  dotnet-version:
+    description: 'The version of .NET to use'
+    required: true
+    default: '8.0.x'
+  configuration:
+    description: 'The build configuration to use'
+    required: true
+    default: 'Release'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Set Up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Restore Dependencies
+      run: dotnet restore src
+      shell: bash
+
+    - name: Build Solution
+      run: dotnet build src --configuration ${{ inputs.configuration }} --no-restore
+      shell: bash

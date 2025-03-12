@@ -6,7 +6,7 @@ on:
 
 jobs:
   validate-pr-title:
-    name: Validate PR title
+    name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
       - name: Validate

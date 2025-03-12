@@ -1,0 +1,31 @@
+name: Create Release
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Restore and Build
+      uses: ./.github/actions/restore-build
+      with:
+        dotnet-version: '8.0.x'
+        configuration: 'Release'
+
+    - name: Run Tests
+      uses: ./.github/actions/run-tests
+      with:
+        configuration: 'Release'
+
+    - name: Publish Release
+      uses: ./.github/actions/publish-release
+      with:
+        configuration: 'Release'
+        config_name: 'release-drafter.yml'
