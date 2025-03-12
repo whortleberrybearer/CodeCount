@@ -12,16 +12,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Set up .NET
+    - name: Set Up .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
 
-    - name: Restore dependencies
+    - name: Restore Dependencies
       run: dotnet restore src
 
-    - name: Build solution
+    - name: Build Solution
       run: dotnet build src --configuration ${{ inputs.configuration }} --no-restore

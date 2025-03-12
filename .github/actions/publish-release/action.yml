@@ -12,10 +12,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Publish project
+    - name: Publish Project
       run: dotnet publish src/CodeCount/CodeCount.csproj --configuration ${{ inputs.configuration }} --output ./publish
 
-    - name: Draft release
+    - name: Draft Release
       id: draft_release
       uses: release-drafter/release-drafter@v5
       with:
@@ -23,7 +23,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload release asset
+    - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
