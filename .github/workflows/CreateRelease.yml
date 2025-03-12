@@ -25,6 +25,4 @@ jobs:
       uses: ./.github/actions/publish-release
       with:
         configuration: 'Release'
-        tag_name: 'v1.0.0'
-        release_name: 'Release v1.0.0'
-        release_body: 'Release notes for version 1.0.0'
+        config_name: 'release-drafter.yml'

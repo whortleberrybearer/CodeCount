@@ -1,0 +1,22 @@
+name-template: 'v$NEXT_PATCH_VERSION'
+tag-template: 'v$NEXT_PATCH_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feat'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+  - title: '📝 Documentation'
+    labels:
+      - 'docs'
+  - title: '🏗️ Refactoring'
+    labels:
+      - 'refactor'
+change-template: '- $TITLE (#$NUMBER) by @$AUTHOR'
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/OWNER/REPO/compare/$PREVIOUS_TAG...$NEW_TAG
