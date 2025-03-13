@@ -23,6 +23,7 @@ jobs:
       uses: ./.github/actions/run-tests
       with:
         configuration: 'Release'
+        add-comments: false
 
     - name: Publish Release
       uses: ./.github/actions/publish-release

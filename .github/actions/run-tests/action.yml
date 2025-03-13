@@ -5,6 +5,10 @@ inputs:
     description: 'The build configuration to use'
     required: true
     default: 'Release'
+  add-comments:
+    description: 'Whether to add comments to the PR'
+    required: false
+    default: true
 runs:
   using: 'composite'
   steps:
@@ -21,7 +25,7 @@ runs:
         check_run: false
 
     - name: Publish Test Report
-      if: github.event.pull_request != null
+      if: ${{ inputs.add-comments }}
       uses: dorny/test-reporter@v1.9.1
       with:
         name: Test Results
@@ -42,7 +46,7 @@ runs:
         thresholds: '60 80'
 
     - name: Add Test Coverage PR Comment
-      if: github.event.pull_request != null
+      if: ${{ inputs.add-comments }}
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         recreate: true
