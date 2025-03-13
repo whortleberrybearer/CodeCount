@@ -17,14 +17,23 @@ runs:
       run: dotnet test src --configuration ${{ inputs.configuration }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --results-directory ./test-results
       shell: bash
 
-    - name: Publish Test Results
+    - name: Publish Test Results (with comments)
+      if: ${{ inputs.add-comments }}
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()        
       with:
         files: |
           test-results/**/*.trx
         check_run: false
-        comment_mode: ${{ inputs.add-comments }} ? 'always' : 'off'
+        comment_mode: 'always'
+
+    - name: Publish Test Results (without comments)
+      if: ${{ !inputs.add-comments }}
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        files: |
+          test-results/**/*.trx
+        check_run: false
+        comment_mode: 'off'
 
     - name: Publish Test Report
       if: ${{ inputs.add-comments }}
