@@ -9,6 +9,7 @@ inputs:
     description: 'Whether to add comments to the PR'
     required: false
     default: true
+    type: boolean
 runs:
   using: 'composite'
   steps:
@@ -23,9 +24,10 @@ runs:
         files: |
           test-results/**/*.trx
         check_run: false
-        comment_mode: ${{ inputs.add-comments }} == 'true' ? 'always' : 'off'
+        comment_mode: ${{ inputs.add-comments }} ? 'always' : 'off'
 
     - name: Publish Test Report
+      if: ${{ inputs.add-comments }}
       uses: dorny/test-reporter@v1.9.1
       with:
         name: Test Results
@@ -46,7 +48,7 @@ runs:
         thresholds: '60 80'
 
     - name: Add Test Coverage PR Comment
-      if: ${{ inputs.add-comments }} == 'true'
+      if: ${{ inputs.add-comments }}
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         recreate: true
