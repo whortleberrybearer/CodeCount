@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+  checks: write
+  contents: read
+
 jobs:
   create-release:
     if: github.event.pull_request.merged == true
