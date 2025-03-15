@@ -19,6 +19,12 @@ runs:
       run: dotnet publish src/CodeCount/CodeCount.csproj --configuration ${{ inputs.configuration }} --output ./publish
       shell: bash
 
+    - name: Zip Artifacts
+      run: |
+        cd publish
+        zip -r CodeCount.zip .
+      shell: bash
+
     - name: Draft Release
       id: draft_release
       uses: release-drafter/release-drafter@v5
@@ -34,6 +40,6 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
         upload_url: ${{ steps.draft_release.outputs.upload_url }}
-        asset_path: ./publish/*
+        asset_path: publish/CodeCount.zip
         asset_name: CodeCount.zip
         asset_content_type: application/zip
