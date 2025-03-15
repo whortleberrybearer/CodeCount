@@ -35,3 +35,4 @@ jobs:
       with:
         configuration: 'Release'
         config_name: 'release-drafter.yml'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
