@@ -29,6 +29,7 @@ runs:
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
+      if: success()
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
