@@ -9,6 +9,9 @@ inputs:
     description: 'The configuration file name for release drafter'
     required: true
     default: 'release-drafter.yml'
+  github_token:
+    description: 'GitHub token for authentication'
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -22,12 +25,12 @@ runs:
       with:
         config-name: ${{ inputs.config_name }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
         upload_url: ${{ steps.draft_release.outputs.upload_url }}
         asset_path: ./publish/*
