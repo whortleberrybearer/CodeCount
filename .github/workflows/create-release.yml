@@ -6,7 +6,7 @@ on:
 
 permissions:
   checks: write
-  contents: read
+  contents: write
   pull-requests: write  # This is required even though there is no PR as it causes step errors.
 
 jobs:
