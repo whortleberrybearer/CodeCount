@@ -12,9 +12,6 @@ permissions:
 jobs:
   create-release:
     if: github.event.pull_request.merged == true
-    permissions:
-      contents: write
-      pull-requests: write
     runs-on: ubuntu-latest
 
     steps:
