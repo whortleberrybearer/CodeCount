@@ -18,7 +18,7 @@ runs:
       shell: bash
 
     - name: Publish Test Results (with comments)
-      if: ${{ inputs.add-comments }}
+      if: runner.os == 'Linux' && ${{ inputs.add-comments }}
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         files: |
@@ -27,7 +27,7 @@ runs:
         comment_mode: 'always'
 
     - name: Publish Test Results (without comments)
-      if: ${{ !inputs.add-comments }}
+      if: runner.os == 'Linux' && ${{ !inputs.add-comments }}
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         files: |
