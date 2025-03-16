@@ -10,8 +10,21 @@ permissions:
   pull-requests: write  # This is required even though there is no PR as it causes step errors.
 
 jobs:
-  create-release:
+  draft-release:
     if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Draft Release
+      id: draft_release
+      uses: release-drafter/release-drafter@v5
+      with:
+        config-name: 'release-drafter.yml'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-release-windows:
+    needs: draft-release
     runs-on: windows-latest
 
     steps:
@@ -28,9 +41,22 @@ jobs:
       run: dotnet test src --configuration Release --no-build --verbosity normal
       shell: bash
 
-    - name: Publish Release
-      uses: ./.github/actions/publish-release
+    - name: Publish Project
+      run: dotnet publish src/CodeCount/CodeCount.csproj --configuration Release --output ./publish --runtime win-x64 --self-contained --p:DebugType=None
+      shell: bash
+
+    - name: Zip Artifacts
+      run: |
+        cd publish
+        zip -r CodeCount-win-x64.zip .
+      shell: bash
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        configuration: 'Release'
-        config_name: 'release-drafter.yml'
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        upload_url: ${{ needs.draft-release.outputs['draft_release'].upload_url }}
+        asset_path: publish/CodeCount-win-x64.zip
+        asset_name: CodeCount-win-x64.zip
+        asset_content_type: application/zip
