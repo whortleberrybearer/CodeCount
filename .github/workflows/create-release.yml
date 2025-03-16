@@ -14,6 +14,9 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
+    outputs:
+      upload_url: ${{ steps.draft_release.outputs.upload_url }}
+
     steps:
     - name: Draft Release
       id: draft_release
@@ -56,7 +59,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.draft-release.outputs['draft_release'].upload_url }}
+        upload_url: ${{ needs.draft-release.outputs.upload_url }}
         asset_path: publish/CodeCount-win-x64.zip
         asset_name: CodeCount-win-x64.zip
         asset_content_type: application/zip
