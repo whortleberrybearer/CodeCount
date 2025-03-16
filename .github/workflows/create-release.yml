@@ -24,11 +24,9 @@ jobs:
         dotnet-version: '8.0.x'
         configuration: 'Release'
 
-    - name: Run Tests
-      uses: ./.github/actions/run-tests
-      with:
-        configuration: 'Release'
-        add-comments: false
+    - name: Run Unit Tests
+      run: dotnet test src --configuration Release --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --results-directory ./test-results
+      shell: bash
 
     - name: Publish Release
       uses: ./.github/actions/publish-release
