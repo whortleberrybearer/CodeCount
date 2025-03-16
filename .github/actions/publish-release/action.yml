@@ -16,7 +16,7 @@ runs:
   using: 'composite'
   steps:
     - name: Publish Project
-      run: dotnet publish src/CodeCount/CodeCount.csproj --configuration ${{ inputs.configuration }} --output ./publish
+      run: dotnet publish src/CodeCount/CodeCount.csproj --configuration ${{ inputs.configuration }} --output ./publish --runtime win-x64 --self-contained --p:DebugType=None
       shell: bash
 
     - name: Zip Artifacts
