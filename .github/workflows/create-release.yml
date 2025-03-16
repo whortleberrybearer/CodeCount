@@ -50,9 +50,8 @@ jobs:
 
     - name: Zip Artifacts
       run: |
-        cd publish
-        zip -r CodeCount-win-x64.zip .
-      shell: bash
+        Compress-Archive -Path ./publish/* -DestinationPath ./publish/CodeCount-win-x64.zip
+      shell: pwsh
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
