@@ -28,8 +28,7 @@ jobs:
       run: dotnet test src --configuration Debug --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --results-directory ./test-results
       shell: bash
 
-    - name: Publish Test Results (with comments)
-      if: runner.os == 'Linux' && github.event.pull_request != null
+    - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         files: |
@@ -37,17 +36,7 @@ jobs:
         check_run: false
         comment_mode: 'always'
 
-    - name: Publish Test Results (without comments)
-      if: runner.os == 'Linux' && github.event.pull_request == null
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      with:
-        files: |
-          test-results/**/*.trx
-        check_run: false
-        comment_mode: 'off'
-
     - name: Publish Test Report
-      if: github.event.pull_request != null
       uses: dorny/test-reporter@v1.9.1
       with:
         name: Test Results
@@ -68,7 +57,6 @@ jobs:
         thresholds: '60 80'
 
     - name: Add Test Coverage PR Comment
-      if: github.event.pull_request != null
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         recreate: true
