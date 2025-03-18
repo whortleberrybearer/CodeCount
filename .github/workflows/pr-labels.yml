@@ -1,0 +1,13 @@
+name: PR Labels
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  add-labels:
+    name: Add Labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Conventional Release Labels
+        uses: bcoe/conventional-release-labels@v1
