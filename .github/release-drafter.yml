@@ -1,8 +1,33 @@
-name-template: 'v$NEXT_PATCH_VERSION'
-tag-template: 'v$NEXT_PATCH_VERSION'
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: 'Breaking Changes'
+    labels:
+      - 'breaking'
+  - title: 'Features'
+    labels:
+      - 'feature'
+  - title: 'Bug Fixes'
+    labels:
+      - 'fix'
+version-resolver:
+  major:
+    labels:
+      - 'breaking'
+  minor:
+    labels:
+      - 'feature'
+  patch:
+    labels:
+      - 'fix'
+  default: patch
+include-labels:
+  - 'breaking'
+  - 'feature'
+  - 'fix'
 template: |
-  ## What's Changed
+  # What's Changed
 
   $CHANGES
 
-  **Full Changelog**: https://github.com/OWNER/REPO/compare/$PREVIOUS_TAG...$NEW_TAG
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
