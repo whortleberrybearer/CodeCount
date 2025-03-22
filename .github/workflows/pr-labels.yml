@@ -15,4 +15,4 @@ jobs:
       - name: Add Conventional Release Labels
         uses: bcoe/conventional-release-labels@v1
         with:
-          ignored_types: '["chore", "docs", "ci"]'
+          ignored_types: ''
