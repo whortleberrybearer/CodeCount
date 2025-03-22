@@ -29,7 +29,7 @@ jobs:
     - name: Delete Existing Release Assets
       uses: andreaswilli/delete-release-assets-action@v4.0.0
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.draft_release.outputs.tag_name }}
         deleteOnlyFromDrafts: true
 
