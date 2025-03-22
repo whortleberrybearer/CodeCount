@@ -27,7 +27,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete Existing Release Assets
-      uses: andreaswilli/delete-release-assets-action@v1
+      uses: andreaswilli/delete-release-assets-action@v4
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.draft_release.outputs.tag_name }}
